@@ -25,10 +25,18 @@ class MyHomePage extends StatelessWidget{
         title: Text("Home"),
       ),
       body: Stack(
-        children: <Widget>[
-          Positioned(),
-        ],
-      );
+        children: [
+          Container(
+            child: Positioned(
+              child: Stack(
+                children: <Widget>[
+                  Text("Test")
+                ],
+              ),
+            ),
+          ),
+        ]
+      ),
 
       floatingActionButton: Row(
         children: [
