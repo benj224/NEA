@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
 import "package:udemy1/main.dart";
-import 'package:udemy1/signup.dart';
 
-class LogIn extends StatefulWidget{
-  LogIn({required Key key, required this.title}) : super(key: key);
+class SignUp extends StatefulWidget{
+  SignUp({required Key key}) : super(key: key);
 
-
-  final String title;
   @override
-  _LogInState createState() => _LogInState();
+  _SignUpState createState() => _SignUpState();
 }
 
 
-class _LogInState extends State<LogIn>{
+class _SignUpState extends State<SignUp>{
   TextStyle style = TextStyle(fontFamily: 'Montserrat', fontSize: 20.0);
 
   @override
   Widget build(BuildContext context){
+    final nameField = TextField(
+      obscureText: false,
+      style: style,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15, 20, 15),
+          hintText: "Name",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+      ),
+    );
     final emailField = TextField(
       obscureText: false,
       style: style,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15, 20, 15),
-        hintText: "Email",
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15, 20, 15),
+          hintText: "Email",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
       ),
     );
     final passwordField = TextField(
@@ -35,7 +41,7 @@ class _LogInState extends State<LogIn>{
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
       ),
     );
-    final loginButton = Material(
+    final signUpButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(30),
       color: Color(0xff01A0C7),
@@ -46,23 +52,6 @@ class _LogInState extends State<LogIn>{
           Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
         },
         child: Text("Login",
-          textAlign: TextAlign.center,
-          style: style.copyWith(
-            color: Colors.white, fontWeight: FontWeight.bold
-        ),),
-      ),
-    );
-    final signUpButton = Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(30),
-      color: Color(0xff01A0C7),
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUp(key: UniqueKey(),)));
-        },
-        child: Text("Sign Up",
           textAlign: TextAlign.center,
           style: style.copyWith(
               color: Colors.white, fontWeight: FontWeight.bold
@@ -83,14 +72,15 @@ class _LogInState extends State<LogIn>{
                 SizedBox(
                   height: 155,
                 ),
-                SizedBox(height: 45),
+                SizedBox(height: 20),
+                nameField,
+                SizedBox(height: 25),
                 emailField,
                 SizedBox(height: 25),
                 passwordField,
                 SizedBox(height: 15),
-                loginButton,
-                SizedBox(height: 25),
                 signUpButton,
+                SizedBox(height: 25),
               ],
             ),
           ),
@@ -99,7 +89,3 @@ class _LogInState extends State<LogIn>{
     );
   }
 }
-
-
-
-

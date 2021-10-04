@@ -24,15 +24,11 @@ class MyHomePage extends StatelessWidget{
       appBar: AppBar(
         title: Text("Home"),
       ),
-      body: Column(children: <Widget>[
-        Card(
-          child: Text("CHART"),
-
-        ),
-        Card(
-          child: Text("List of TX"),
-        ),
-      ],),
+      body: Stack(
+        children: <Widget>[
+          Positioned(),
+        ],
+      );
 
       floatingActionButton: Row(
         children: [
