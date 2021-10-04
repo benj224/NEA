@@ -26,13 +26,26 @@ class MyHomePage extends StatelessWidget{
       ),
       body: Stack(
         children: [
-          Container(
-            child: Positioned(
-              child: Stack(
-                children: <Widget>[
-                  Text("Test")
-                ],
+          Positioned(
+            left: 50,
+            top: 50,
+            child: Material(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
+              child: Container(
+                width: 150,
+                height: 200,
+                child: Stack(
+                  children: <Widget>[
+                    Align(
+                      alignment: FractionalOffset(0.5, 0.1),
+                      child:Text("Test") ,
+                    )
+                  ],
+                ),
+              )
             ),
           ),
         ]
