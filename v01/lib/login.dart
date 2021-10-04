@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import "package:udemy1/main.dart";
 
 class LogIn extends StatefulWidget{
   LogIn({required Key key, required this.title}) : super(key: key);
@@ -40,7 +41,9 @@ class _LogInState extends State<LogIn>{
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
+        },
         child: Text("Login",
           textAlign: TextAlign.center,
           style: style.copyWith(
@@ -66,7 +69,8 @@ class _LogInState extends State<LogIn>{
                 emailField,
                 SizedBox(height: 25),
                 passwordField,
-                SizedBox(height: 15)
+                SizedBox(height: 15),
+                loginButton,
               ],
             ),
           ),
@@ -75,3 +79,7 @@ class _LogInState extends State<LogIn>{
     );
   }
 }
+
+
+
+

@@ -22,7 +22,7 @@ class MyHomePage extends StatelessWidget{
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: Text("Flutter App"),
+        title: Text("Home"),
       ),
       body: Column(children: <Widget>[
         Card(
@@ -35,19 +35,26 @@ class MyHomePage extends StatelessWidget{
       ],),
 
       floatingActionButton: Row(
-        children: [FloatingActionButton(
-          onPressed: (){
-            selectFile();
-        },
-      ),
+        children: [
+          Align(
+            child: FloatingActionButton(
+              onPressed: (){
+                selectFile();
+              },
+            ),
+          alignment: Alignment.bottomLeft
+          ),
         const SizedBox(
           width: 200,
-        ),
-        FloatingActionButton(
-          onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn(key: UniqueKey(), title: "test title",)));
-          },
-        )]
+        ),Align(
+            child: FloatingActionButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LogIn(key: UniqueKey(), title: "test title",)));
+              },
+            ),
+            alignment: Alignment.bottomRight,
+          )
+        ]
       ),
     );
   }
