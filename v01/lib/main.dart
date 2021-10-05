@@ -24,32 +24,70 @@ class MyHomePage extends StatelessWidget{
       appBar: AppBar(
         title: Text("Home"),
       ),
+
       body: Stack(
         children: [
           Positioned(
-            left: 50,
-            top: 50,
-            child: Material(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Container(
-                width: 150,
-                height: 200,
-                child: Stack(
-                  children: <Widget>[
-                    Align(
-                      alignment: FractionalOffset(0.5, 0.1),
-                      child:Text("Test") ,
-                    )
-                  ],
-                ),
+            left: 0,
+            top: 0,
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  Positioned(
+                    left: 10,
+                    top: 10,
+                    child: Material(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Container(
+                        width: 150,
+                        height: 200,
+                        color: Colors.red,
+                        child: Stack(
+                          children: <Widget>[
+                            Align(
+                              alignment: FractionalOffset(0.5, 0.1),
+                              child:Text("Test") ,
+                            )
+                          ],
+                        ),
+                      )
+                    ),
+                  ),
+                  Positioned(
+                    left: 170,
+                    top: 220,
+                    child: Material(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Container(
+                          width: 150,
+                          height: 200,
+                          color: Colors.green,
+                          child: Stack(
+                            children: <Widget>[
+                              Align(
+                                alignment: FractionalOffset(0.5, 0.1),
+                                child:Text("Test2") ,
+                              )
+                            ],
+                          ),
+                        )
+                    ),
+                  ),
+                ],
               )
-            ),
-          ),
-        ]
+            )
+          )
+        ],
       ),
+
+
+
 
       floatingActionButton: Row(
         children: [
