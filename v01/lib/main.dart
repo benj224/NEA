@@ -21,14 +21,36 @@ class MyHomePage extends StatelessWidget{
   @override
   Widget build(BuildContext context){
 
-    final List<Widget> packDisplays = [
-      PackDisplay(),
-      PackDisplay(),
-      PackDisplay(),
-      PackDisplay(),
-      PackDisplay(),
-      PackDisplay(),
-    ];
+
+    final pack = Material(
+      elevation: 5,
+      color: Colors.red,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20)
+      ),
+      child: SizedBox(
+        width: 100,
+        child: Stack(
+          children: [
+            Align(
+              alignment: FractionalOffset(0.5, 0.1),
+              child: Text("Test"),
+            ),
+            Align(
+              alignment: FractionalOffset(0.3, 0.3),
+              child: CircularProgressIndicator(
+                value: 0.5,
+              ),
+            ),
+            Align(
+              alignment: FractionalOffset(0.32, 0.3),
+              child: Text("Text"),
+            )
+          ],
+        ),
+      ),
+    );
+
 
 
     return Scaffold(
@@ -37,55 +59,24 @@ class MyHomePage extends StatelessWidget{
       ),
 
       body: Center(
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-
-            children: [
-              PackDisplay(),
-              PackDisplay(),
-              PackDisplay(),
-              PackDisplay(),
-              PackDisplay(),
-              PackDisplay(),
-            ],
-        ),
-      ),
-    );
-  }
-}
-
-
-class PackDisplay extends StatelessWidget{
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      body: Material(
-        elevation: 5,
-        color: Colors.red,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-        ),
-        child: SizedBox(
-          width: 100,
+        child: Container(
           height: 200,
-          child: Stack(
-              children: [
-                Align(
-                  alignment: FractionalOffset(0.5, 0.1),
-                  child: Text("Test"),
-                ),
-
-                Align(
-                  alignment: FractionalOffset(0.5, 0.3),
-                  child: Text("Test2"),
-                ),
-              ]
+          child: ListView(
+            // This next line does the trick.
+            scrollDirection: Axis.horizontal,
+            children: <Widget>[
+              pack,
+              pack,
+            ],
           ),
         ),
       ),
     );
   }
 }
+
+
+
 
 
 void selectFile() async{
@@ -98,57 +89,4 @@ void selectFile() async{
   }
 }
 
-
-class IceCreamCard extends StatelessWidget {
-  const IceCreamCard({
-    this.flavorColor = Colors.redAccent,
-    this.flavor = 'Flavor Name',
-  });
-
-  final Color flavorColor;
-  final String flavor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xffeeeeee), width: 2.0),
-        color: Colors.white38,
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white10,
-            blurRadius: 4,
-            spreadRadius: 2,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      margin: EdgeInsets.all(8),
-      height: 200,
-      width: 200,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-              child: Icon(
-                Icons.icecream,
-                size: 100.0,
-                color: flavorColor,
-              )),
-          SizedBox(
-            height: 20.0,
-          ),
-          Text(
-            flavor,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24.0,
-                color: flavorColor),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
