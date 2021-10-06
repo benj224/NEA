@@ -37,17 +37,17 @@ class MyHomePage extends StatelessWidget{
       ),
 
       body: Center(
-        child: SingleChildScrollView(
+        child: ListView(
           scrollDirection: Axis.horizontal,
-          child: Row(
+
             children: [
-              IceCreamCard(flavorColor: Colors.redAccent, flavor: 'Strawberry'),
-              IceCreamCard(flavorColor: Colors.brown, flavor: 'Chocolate'),
-              IceCreamCard(flavorColor: Colors.blueAccent, flavor: 'Blueberry'),
-              IceCreamCard(flavorColor: Colors.amberAccent, flavor: 'Lemon'),
-              IceCreamCard(flavorColor: Colors.greenAccent, flavor: 'Mint'),
+              PackDisplay(),
+              PackDisplay(),
+              PackDisplay(),
+              PackDisplay(),
+              PackDisplay(),
+              PackDisplay(),
             ],
-          ),
         ),
       ),
     );
@@ -59,27 +59,28 @@ class PackDisplay extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: SizedBox(
-        width: 100,
-        height: 200,
-        child: Material(
-            elevation: 5,
-            color: Colors.red,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Container(
-              width: 100,
-              height: 200,
-              child: Stack(
-                children: <Widget>[
-                  Align(
-                    alignment: FractionalOffset(0.5, 0.1),
-                    child:Text("Test") ,
-                  )
-                ],
-              ),
-            )
+      body: Material(
+        elevation: 5,
+        color: Colors.red,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: SizedBox(
+          width: 100,
+          height: 200,
+          child: Stack(
+              children: [
+                Align(
+                  alignment: FractionalOffset(0.5, 0.1),
+                  child: Text("Test"),
+                ),
+
+                Align(
+                  alignment: FractionalOffset(0.5, 0.3),
+                  child: Text("Test2"),
+                ),
+              ]
+          ),
         ),
       ),
     );
