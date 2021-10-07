@@ -1,7 +1,9 @@
 import 'dart:html';
+import "dart:convert";
 import "package:flutter/services.dart";
 import "package:flutter/material.dart";
 import "package:file_picker/file_picker.dart";
+
 
 import 'login.dart';
 
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget{
 
 class MyHomePage extends StatelessWidget{
   @override
-  Widget build(BuildContext context){
+  Widget build(context) {
 
 
     final pack = Material(
@@ -54,6 +56,8 @@ class MyHomePage extends StatelessWidget{
       ),
     );
 
+    Future<List<PackDisplay>> packFuture = loadJsonPacks();
+
 
 
     return Scaffold(
@@ -67,7 +71,18 @@ class MyHomePage extends StatelessWidget{
           child: ListView(
             // This next line does the trick.
             scrollDirection: Axis.horizontal,
-            children: <Widget>[
+            children: FutureBuilder<List<PackDisplay>>(
+              future: packFuture,
+              builder: (context, snapshot){
+                List<Widget> children;
+                if (snapshot.hasData){
+                  return snapshot.data;
+                }else{
+                  return <Widget>[CircularProgressIndicator()];
+                }
+              }
+            ),
+            /*children: <Widget>[
               PackDisplay(
                 progress: 0.2,
                 name: "Pack 1",
@@ -80,7 +95,7 @@ class MyHomePage extends StatelessWidget{
                 progress: 0.6,
                 name: "Pack 3",
               ),
-            ],
+            ],*/
           ),
         ),
       ),
@@ -137,7 +152,7 @@ class _PackDisplayState extends State<PackDisplay>{
 
 
 
-Future<List<File>?> selectFile() async{
+/*Future<List<File>?> selectFile() async{
   FilePickerResult? result = await FilePicker.platform.pickFiles(
     allowMultiple: true,
     type: FileType.custom,
@@ -149,10 +164,19 @@ Future<List<File>?> selectFile() async{
   }else{
     return null;
   }
-}
+}*/
 
 
-void loadJsonPacks() async{
+Future<List<PackDisplay>> loadJsonPacks() async{//add null saftey at some point
+  Future<String> json = rootBundle.loadString("assets/json/test.json");
+  String rawJson = await json;
+
+  Map<String, dynamic> map = jsonDecode(rawJson);
+
+  String title = map["title"];
+  double progress = map["progress"];
+
+  return [PackDisplay(progress: progress, name: title,)];
 
 }
 
