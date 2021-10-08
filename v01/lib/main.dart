@@ -56,7 +56,7 @@ class MyHomePage extends StatelessWidget{
       ),
     );
 
-    Future<List<PackDisplay>> packFuture = loadJsonPacks();
+    Future<List<Widget>> packFuture = loadJsonPacks();
 
 
 
@@ -69,19 +69,19 @@ class MyHomePage extends StatelessWidget{
         child: Container(
           height: 200,
           child: ListView(
-            // This next line does the trick.
-            scrollDirection: Axis.horizontal,
-            children: FutureBuilder<List<PackDisplay>>(
-              future: packFuture,
-              builder: (context, snapshot){
-                List<Widget> children;
-                if (snapshot.hasData){
-                  return snapshot.data;
-                }else{
-                  return <Widget>[CircularProgressIndicator()];
+            children: FutureBuilder<List<Widget>>(
+                future: packFuture,
+                builder: (context, snapshot){
+                  List<Widget>? children = []
+                  if (snapshot.hasData){
+                    List<Widget>? children = snapshot.data;
+                  }else{
+                    List<Widget>? children = [CircularProgressIndicator()];
+                  }
+                  return children;
                 }
-              }
             ),
+          )
             /*children: <Widget>[
               PackDisplay(
                 progress: 0.2,
@@ -96,9 +96,7 @@ class MyHomePage extends StatelessWidget{
                 name: "Pack 3",
               ),
             ],*/
-          ),
-        ),
-      ),
+      ),)
     );
   }
 }
@@ -149,6 +147,24 @@ class _PackDisplayState extends State<PackDisplay>{
 }
 
 
+class DisplayPack extends StatelessWidget {
+  @override
+  Widget build(context) {
+    return FutureBuilder<ListView>(
+        future: loadJsonPacks(),
+        builder: (context, AsyncSnapshot<ListView> snapshot) {
+          if (snapshot.hasData) {
+            return snapshot.data;//Text(snapshot.data);
+          } else {
+            return CircularProgressIndicator();
+          }
+        }
+    );
+  }
+}
+
+
+
 
 
 
@@ -167,7 +183,7 @@ class _PackDisplayState extends State<PackDisplay>{
 }*/
 
 
-Future<List<PackDisplay>> loadJsonPacks() async{//add null saftey at some point
+Future<ListView> loadJsonPacks() async{//add null saftey at some point
   Future<String> json = rootBundle.loadString("assets/json/test.json");
   String rawJson = await json;
 
@@ -176,7 +192,9 @@ Future<List<PackDisplay>> loadJsonPacks() async{//add null saftey at some point
   String title = map["title"];
   double progress = map["progress"];
 
-  return [PackDisplay(progress: progress, name: title,)];
+  return ListView(
+    children: [PackDisplay(progress: progress, name: title,)],
+  );
 
 }
 
