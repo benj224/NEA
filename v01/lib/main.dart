@@ -1,10 +1,6 @@
-import 'dart:html';
 import "dart:convert";
 import "package:flutter/services.dart";
 import "package:flutter/material.dart";
-import "package:file_picker/file_picker.dart";
-
-
 import 'login.dart';
 
 void main(){
@@ -56,7 +52,7 @@ class MyHomePage extends StatelessWidget{
       ),
     );
 
-    Future<List<Widget>> packFuture = loadJsonPacks();
+   // Future<List<Widget>> packFuture = loadJsonPacks();
 
 
 
@@ -68,38 +64,12 @@ class MyHomePage extends StatelessWidget{
       body: Center(
         child: Container(
           height: 200,
-          child: ListView(
-            children: FutureBuilder<List<Widget>>(
-                future: packFuture,
-                builder: (context, snapshot){
-                  List<Widget>? children = []
-                  if (snapshot.hasData){
-                    List<Widget>? children = snapshot.data;
-                  }else{
-                    List<Widget>? children = [CircularProgressIndicator()];
-                  }
-                  return children;
-                }
-            ),
-          )
-            /*children: <Widget>[
-              PackDisplay(
-                progress: 0.2,
-                name: "Pack 1",
-              ),
-              PackDisplay(
-                progress: 0.4,
-                name: "Pack 2",
-              ),
-              PackDisplay(
-                progress: 0.6,
-                name: "Pack 3",
-              ),
-            ],*/
+          child: MyWidget()
       ),)
     );
   }
 }
+
 
 class PackDisplay extends StatefulWidget{
   PackDisplay({this.progress, this.name}) : super();
@@ -147,40 +117,32 @@ class _PackDisplayState extends State<PackDisplay>{
 }
 
 
-class DisplayPack extends StatelessWidget {
+class MyWidget extends StatefulWidget{
   @override
-  Widget build(context) {
-    return FutureBuilder<ListView>(
-        future: loadJsonPacks(),
-        builder: (context, AsyncSnapshot<ListView> snapshot) {
-          if (snapshot.hasData) {
-            return snapshot.data;//Text(snapshot.data);
-          } else {
-            return CircularProgressIndicator();
-          }
-        }
-    );
+  State createState() => MyWidgetState();
+}
+
+class MyWidgetState extends State<MyWidget>{
+  var _result;
+  @override
+  void initState(){
+    loadJsonPacks().then((result) {
+      setState(() {
+        _result = result;
+      });
+    });
+  }
+
+  @override
+  Widget build(context){
+    if (_result == null){
+      return new CircularProgressIndicator();
+    }
+    return _result;
   }
 }
 
 
-
-
-
-
-/*Future<List<File>?> selectFile() async{
-  FilePickerResult? result = await FilePicker.platform.pickFiles(
-    allowMultiple: true,
-    type: FileType.custom,
-    allowedExtensions: ["json"],
-  );
-  if (result != null){
-    List<File> files = result.paths.map((path) => File(path)).toList();
-    return files;
-  }else{
-    return null;
-  }
-}*/
 
 
 Future<ListView> loadJsonPacks() async{//add null saftey at some point
@@ -193,6 +155,7 @@ Future<ListView> loadJsonPacks() async{//add null saftey at some point
   double progress = map["progress"];
 
   return ListView(
+    scrollDirection: Axis.horizontal,
     children: [PackDisplay(progress: progress, name: title,)],
   );
 
