@@ -3,6 +3,7 @@
 "cards": [
   {"cardNo":  1,
   "question":  "Power = ?",
+    "score": 5,
   "answers":  [
     {"A":{
       "text": "W/T",

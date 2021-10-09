@@ -22,7 +22,7 @@ class MyHomePage extends StatelessWidget{
   Widget build(context) {
 
 
-    final pack = Material(
+/*    final pack = Material(
       elevation: 5,
       color: Colors.red,
       shape: RoundedRectangleBorder(
@@ -50,7 +50,7 @@ class MyHomePage extends StatelessWidget{
           ],
         ),
       ),
-    );
+    );*/
 
    // Future<List<Widget>> packFuture = loadJsonPacks();
 
