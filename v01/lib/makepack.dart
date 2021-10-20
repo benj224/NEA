@@ -7,34 +7,45 @@ class CreatePack extends StatefulWidget{
 }
 
 class _CreatePackState extends State<CreatePack>{
-  final List<Card> cards = <Card>[];//GetCards
+  final List<Question> questions = <Question>[Question(cardNo: 0, question: "null", score: 5, answers: <Answer>[])];//GetCards
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(context){
     return Scaffold(
-      //prehaps make page title same as test pack title
+      appBar: AppBar(title: const Text(' List')),
+      body: ListView(children: questions),
+      // add items to the to-do list
+      floatingActionButton: FloatingActionButton(
+          onPressed: (){
+            setState(() {
+              questions.add(Question(cardNo: 0, question: "null", score: 5, answers: <Answer>[]));
+            });
+          },
+          tooltip: 'Add Item',
+          child: Icon(Icons.add)),
     );
   }
-  void addCard(int cardNo, String question, double score){
+  void _addCard(int cardNo, String question, double score){
     //add card with answers initialized to null and then edit after
   }
 }
 
 
 
-class Card extends StatefulWidget{
-  Card({required this.cardNo, required this.question, required this.score, required this.answers}) : super();
+
+class Question extends StatefulWidget{
+  Question({required this.cardNo, required this.question, required this.score, required this.answers}) : super();
   final int cardNo;
   final String question;
   final int score;
   final List<Answer> answers;
 
   @override
-  _CardState createState() => _CardState();
+  _QuestionState createState() => _QuestionState();
 }
 
-class _CardState extends State<Card>{
+class _QuestionState extends State<Question>{
   @override
   Widget build(context){
     return Material(
@@ -47,17 +58,63 @@ class _CardState extends State<Card>{
         child: Stack(
           children: [
             Align(
-              alignment: FractionalOffset(0.1, 0.2),
-              child: Text("Card No: {widget.cardNo}"),
+              alignment: FractionalOffset(0.05, 0.2),
+              child: SizedBox(
+                height: 20,
+                width: MediaQuery.of(context).size.width * 0.425,
+                child: TextField(
+                  style: TextStyle(
+                  ),
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      hintText: "Question",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                  ),
+                ),
+              ),
             ),
             Align(
-              alignment: FractionalOffset(0.1, 0.8),
-              child: Text("Question: {widget.question}")
+              alignment: FractionalOffset(0.9, 0.2),
+              child: SizedBox(
+                height: 20,
+                width: MediaQuery.of(context).size.width * 0.425,
+                child: TextField(
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      hintText: "Answer 1",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                  ),
+                ),
+              ),
             ),
             Align(
-              alignment: FractionalOffset(0.5, 0.2),
-              child: Text("Answers:\n\t{widget.answers[0].text} {widget.answers[0].correct}\n\t{widget.answers[1].text} {widget.answers[1].correct}\n\t{widget.answers[2].text} {widget.answers[2].correct}"),
-            )
+              alignment: FractionalOffset(0.9, 0.5),
+              child: SizedBox(
+                height: 20,
+                width: MediaQuery.of(context).size.width * 0.425,
+                child: TextField(
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      hintText: "Answer 2",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: FractionalOffset(0.9, 0.8),
+              child: SizedBox(
+                height: 20,
+                width: MediaQuery.of(context).size.width * 0.425,
+                child: TextField(
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      hintText: "Answer 3",
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

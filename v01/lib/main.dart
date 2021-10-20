@@ -2,6 +2,7 @@ import "dart:convert";
 import "package:flutter/services.dart";
 import "package:flutter/material.dart";
 import 'login.dart';
+import 'makepack.dart';
 
 void main(){
   runApp(MyApp());
@@ -65,7 +66,14 @@ class MyHomePage extends StatelessWidget{
         child: Container(
           height: 200,
           child: MyWidget()
-      ),)
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack()));
+        },
+      ),
+
     );
   }
 }
