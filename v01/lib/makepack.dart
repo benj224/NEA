@@ -19,7 +19,8 @@ class _CreatePackState extends State<CreatePack>{
       floatingActionButton:Stack(
         children: [
           Align(
-            FloatingActionButton(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
                 onPressed: (){
                   setState(() {
                     questions.add(Question(cardNo: 0, question: "null", score: 5, answers: <Answer>[]));
@@ -27,14 +28,16 @@ class _CreatePackState extends State<CreatePack>{
                 },
                 tooltip: 'Add Item',
                 child: Icon(Icons.add)),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: FloatingActionButton(
+                onPressed: (){
+                  ;
+                },
+                tooltip: 'Done',
+                child: Icon(Icons.offline_pin)),
           )
-
-          FloatingActionButton(
-              onPressed: (){
-                ;
-              },
-              tooltip: 'Done',
-              child: Icon(Icons.offline_pin)),
         ],
       )
     );
@@ -44,7 +47,9 @@ class _CreatePackState extends State<CreatePack>{
   }
 }
 
+PackToJSON(){
 
+}
 
 
 class Question extends StatefulWidget{
@@ -53,6 +58,17 @@ class Question extends StatefulWidget{
   final String question;
   final int score;
   final List<Answer> answers;
+
+
+  Map<String, dynamic> toJson() =>
+      {
+        'cardno': cardNo,
+        'question': question,
+        'score': score,
+        'answers[A]': answers[0].toJson(),
+        'answers[B]': answers[1].toJson(),
+        'answers[C]': answers[2].toJson(),
+      };
 
   @override
   _QuestionState createState() => _QuestionState();
@@ -140,4 +156,10 @@ class Answer{
   Answer({required this.text, required this.correct}) : super();
   final String text;
   final bool correct;
+
+  Map<String, dynamic> toJson() =>
+      {
+        'text': text,
+        'correct': correct,
+      };
 }
