@@ -16,14 +16,27 @@ class _CreatePackState extends State<CreatePack>{
       appBar: AppBar(title: const Text(' List')),
       body: ListView(children: questions),
       // add items to the to-do list
-      floatingActionButton: FloatingActionButton(
-          onPressed: (){
-            setState(() {
-              questions.add(Question(cardNo: 0, question: "null", score: 5, answers: <Answer>[]));
-            });
-          },
-          tooltip: 'Add Item',
-          child: Icon(Icons.add)),
+      floatingActionButton:Stack(
+        children: [
+          Align(
+            FloatingActionButton(
+                onPressed: (){
+                  setState(() {
+                    questions.add(Question(cardNo: 0, question: "null", score: 5, answers: <Answer>[]));
+                  });
+                },
+                tooltip: 'Add Item',
+                child: Icon(Icons.add)),
+          )
+
+          FloatingActionButton(
+              onPressed: (){
+                ;
+              },
+              tooltip: 'Done',
+              child: Icon(Icons.offline_pin)),
+        ],
+      )
     );
   }
   void _addCard(int cardNo, String question, double score){
