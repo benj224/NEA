@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import "package:json_annotation/json_annotation.dart";
+import 'package:build_runner/build_runner.dart';
+import 'package:json_serializable/json_serializable.dart';
+
+part 'makepack.g.dart';
 
 class CreatePack extends StatefulWidget{
 
@@ -51,16 +56,16 @@ PackToJSON(){
 
 }
 
-
+@JsonSerializable()
 class Question extends StatefulWidget{
   Question({required this.cardNo, required this.question, required this.score, required this.answers}) : super();
   final int cardNo;
   final String question;
   final int score;
-  final List<Answer> answers;
+  final List<dynamic> answers;
 
 
-  Map<String, dynamic> toJson() =>
+/*  Map<String, dynamic> toJson() =>
       {
         'cardno': cardNo,
         'question': question,
@@ -68,7 +73,7 @@ class Question extends StatefulWidget{
         'answers[A]': answers[0].toJson(),
         'answers[B]': answers[1].toJson(),
         'answers[C]': answers[2].toJson(),
-      };
+      };*/
 
   @override
   _QuestionState createState() => _QuestionState();
@@ -151,7 +156,7 @@ class _QuestionState extends State<Question>{
   }
 }
 
-
+@JsonSerializable()
 class Answer{
   Answer({required this.text, required this.correct}) : super();
   final String text;
