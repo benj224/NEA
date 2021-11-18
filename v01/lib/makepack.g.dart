@@ -5,13 +5,12 @@ part of 'makepack.dart';
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
-
 Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
       cardNo: json['cardNo'] as int,
       question: json['question'] as String,
       score: json['score'] as int,
       answers: (json['answers'] as List<dynamic>)
-          .map((e) => Answer.fromJson(e as Map<String, dynamic>))
+          .map((e) => _$AnswerFromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

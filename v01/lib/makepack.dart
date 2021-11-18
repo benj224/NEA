@@ -1,9 +1,15 @@
+import 'dart:convert';
+import "dart:io";
 import 'package:flutter/material.dart';
 import "package:json_annotation/json_annotation.dart";
-import 'package:build_runner/build_runner.dart';
-import 'package:json_serializable/json_serializable.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_generator/hive_generator.dart';
 
-part 'makepack.g.dart';
+
+part 'card.g.dart';
+
+List<Question> questions = [];
 
 class CreatePack extends StatefulWidget{
 
@@ -11,14 +17,13 @@ class CreatePack extends StatefulWidget{
   _CreatePackState createState() => _CreatePackState();
 }
 
-class _CreatePackState extends State<CreatePack>{
-  final List<Question> questions = <Question>[Question(cardNo: 0, question: "null", score: 5, answers: <Answer>[])];//GetCards
+class _CreatePackState extends State<CreatePack>{//GetCards
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
   Widget build(context){
     return Scaffold(
-      appBar: AppBar(title: const Text(' List')),
+      appBar: AppBar(title: const Text('List')),
       body: ListView(children: questions),
       // add items to the to-do list
       floatingActionButton:Stack(
@@ -28,7 +33,7 @@ class _CreatePackState extends State<CreatePack>{
             child: FloatingActionButton(
                 onPressed: (){
                   setState(() {
-                    questions.add(Question(cardNo: 0, question: "null", score: 5, answers: <Answer>[]));
+                    questions.add(Question(cardNo: 0, question: "null", score: 5));
                   });
                 },
                 tooltip: 'Add Item',
@@ -52,17 +57,20 @@ class _CreatePackState extends State<CreatePack>{
   }
 }
 
-PackToJSON(){
-
-}
-
-@JsonSerializable()
+@HiveType(typeId: 1)
 class Question extends StatefulWidget{
-  Question({required this.cardNo, required this.question, required this.score, required this.answers}) : super();
+  Question({required this.cardNo, required this.question, required this.score, this.answers}) : super();
+  @HiveField(1)
   final int cardNo;
+  @HiveField(2)
   final String question;
+  @HiveField(3)
   final int score;
-  final List<dynamic> answers;
+  @HiveField(4)
+  List<Answer>? answers = [];
+
+
+
 
 
 /*  Map<String, dynamic> toJson() =>
@@ -156,10 +164,15 @@ class _QuestionState extends State<Question>{
   }
 }
 
-@JsonSerializable()
+
+
+
+@HiveType(typeId: 2)
 class Answer{
   Answer({required this.text, required this.correct}) : super();
+  @HiveField(1)
   final String text;
+  @HiveField(2)
   final bool correct;
 
   Map<String, dynamic> toJson() =>
@@ -167,4 +180,28 @@ class Answer{
         'text': text,
         'correct': correct,
       };
+}
+
+
+SavePackToJSON(){
+
+  String json = jsonEncode(_$QuestionToJson(questions[0]));
+}
+
+Future<String> get _localPath async {
+  final directory = await getApplicationDocumentsDirectory();
+
+  return directory.path;
+}
+
+Future<File> get _localFile async {
+  final path = await _localPath;
+  return File('$path/counter.txt');
+}
+
+Future<File> writeCounter(int counter) async {
+  final file = await _localFile;
+
+  // Write the file
+  return file.writeAsString('$counter');
 }

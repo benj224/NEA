@@ -3,8 +3,13 @@ import "package:flutter/services.dart";
 import "package:flutter/material.dart";
 import 'login.dart';
 import 'makepack.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main(){
+void main() async{
+  await Hive.initFlutter();
+
+  await Hive.openBox("PackBox");
   runApp(MyApp());
 }
 
