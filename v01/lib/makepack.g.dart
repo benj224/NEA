@@ -3,30 +3,85 @@
 part of 'makepack.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
+// TypeAdapterGenerator
 // **************************************************************************
-Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
-      cardNo: json['cardNo'] as int,
-      question: json['question'] as String,
-      score: json['score'] as int,
-      answers: (json['answers'] as List<dynamic>)
-          .map((e) => _$AnswerFromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
 
-Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
-      'cardNo': instance.cardNo,
-      'question': instance.question,
-      'score': instance.score,
-      'answers': instance.answers,
+class QuestionAdapter extends TypeAdapter<Question> {
+  @override
+  final int typeId = 1;
+
+  @override
+  Question read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-
-Answer _$AnswerFromJson(Map<String, dynamic> json) => Answer(
-      text: json['text'] as String,
-      correct: json['correct'] as bool,
+    return Question(
+      cardNo: fields[1] as int,
+      question: fields[2] as String,
+      score: fields[3] as int,
+      answers: (fields[4] as List?)?.cast<Answer>(),
     );
+  }
 
-Map<String, dynamic> _$AnswerToJson(Answer instance) => <String, dynamic>{
-      'text': instance.text,
-      'correct': instance.correct,
+  @override
+  void write(BinaryWriter writer, Question obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(1)
+      ..write(obj.cardNo)
+      ..writeByte(2)
+      ..write(obj.question)
+      ..writeByte(3)
+      ..write(obj.score)
+      ..writeByte(4)
+      ..write(obj.answers);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QuestionAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class AnswerAdapter extends TypeAdapter<Answer> {
+  @override
+  final int typeId = 2;
+
+  @override
+  Answer read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+    return Answer(
+      text: fields[1] as String,
+      correct: fields[2] as bool,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Answer obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(1)
+      ..write(obj.text)
+      ..writeByte(2)
+      ..write(obj.correct);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AnswerAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}

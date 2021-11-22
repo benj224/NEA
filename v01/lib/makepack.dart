@@ -6,8 +6,10 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive_generator/hive_generator.dart';
 
+part "makepack.g.dart";
 
-part 'card.g.dart';
+//load box in main
+//save list of cards to box and use to create widgets prehaps only commit ot box when user is finnished on page instead fo sequentialy
 
 List<Question> questions = [];
 
@@ -182,26 +184,3 @@ class Answer{
       };
 }
 
-
-SavePackToJSON(){
-
-  String json = jsonEncode(_$QuestionToJson(questions[0]));
-}
-
-Future<String> get _localPath async {
-  final directory = await getApplicationDocumentsDirectory();
-
-  return directory.path;
-}
-
-Future<File> get _localFile async {
-  final path = await _localPath;
-  return File('$path/counter.txt');
-}
-
-Future<File> writeCounter(int counter) async {
-  final file = await _localFile;
-
-  // Write the file
-  return file.writeAsString('$counter');
-}

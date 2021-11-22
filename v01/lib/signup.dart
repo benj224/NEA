@@ -20,7 +20,7 @@ class _SignUpState extends State<SignUp>{
       decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(20.0, 15, 20, 15),
           hintText: "Name",
-_      ),
+       ),
     );
     final emailField = TextField(
       obscureText: false,
