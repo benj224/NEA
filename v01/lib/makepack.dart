@@ -1,10 +1,11 @@
-import 'dart:convert';
-import "dart:io";
+//import 'dart:convert';
+//import "dart:io";
 import 'package:flutter/material.dart';
-import "package:json_annotation/json_annotation.dart";
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:hive_generator/hive_generator.dart';
+//import 'package:hive_generator/hive_generator.dart';
+
+//maby make class for list of cards to store in hive.
 
 part "makepack.g.dart";
 
@@ -71,19 +72,6 @@ class Question extends StatefulWidget{
   @HiveField(4)
   List<Answer>? answers = [];
 
-
-
-
-
-/*  Map<String, dynamic> toJson() =>
-      {
-        'cardno': cardNo,
-        'question': question,
-        'score': score,
-        'answers[A]': answers[0].toJson(),
-        'answers[B]': answers[1].toJson(),
-        'answers[C]': answers[2].toJson(),
-      };*/
 
   @override
   _QuestionState createState() => _QuestionState();
