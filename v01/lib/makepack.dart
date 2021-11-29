@@ -5,6 +5,8 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 //import 'package:hive_generator/hive_generator.dart';
 
+//make classes without flutter objects and classes with flutter and on save for pack edditor save values to classes and then commit to box.
+
 //maby make class for list of cards to store in hive.
 
 part "makepack.g.dart";
@@ -59,6 +61,16 @@ class _CreatePackState extends State<CreatePack>{//GetCards
     //add card with answers initialized to null and then edit after
   }
 }
+
+@HiveType(typeId: 0)
+class Pack extends StatefulWidget{
+  Pack({required this.title})
+  @HiveField(5)
+  final String title;
+  @HiveField(6)
+  final List<Question> questions = []
+}
+
 
 @HiveType(typeId: 1)
 class Question extends StatefulWidget{
