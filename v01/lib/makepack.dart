@@ -63,18 +63,19 @@ class _CreatePackState extends State<CreatePack>{//GetCards
 }
 
 @HiveType(typeId: 0)
-class Pack extends StatefulWidget{
-  Pack({required this.title})
+class HivePack extends HiveObject{
+  HivePack({required this.title})
   @HiveField(5)
   final String title;
   @HiveField(6)
-  final List<Question> questions = []
+  final List<HiveQuestion> questions = [];
 }
 
-
 @HiveType(typeId: 1)
-class Question extends StatefulWidget{
-  Question({required this.cardNo, required this.question, required this.score, this.answers}) : super();
+class HiveQuestion extends HiveObject{
+  HiveQuestion(
+      {required this.cardNo, required this.question, required this.score, this.answers})
+      : super();
   @HiveField(1)
   final int cardNo;
   @HiveField(2)
@@ -82,6 +83,26 @@ class Question extends StatefulWidget{
   @HiveField(3)
   final int score;
   @HiveField(4)
+  List<Answer>? answers = [];
+}
+
+@HiveType(typeId: 2)
+class Answer{
+  Answer({required this.text, required this.correct}) : super();
+  @HiveField(1)
+  final String text;
+  @HiveField(2)
+  final bool correct;
+}
+
+
+
+
+class Question extends StatefulWidget{
+  Question({required this.cardNo, required this.question, required this.score, this.answers}) : super();
+  final int cardNo;
+  final String question;
+  final int score;
   List<Answer>? answers = [];
 
 
@@ -176,11 +197,5 @@ class Answer{
   final String text;
   @HiveField(2)
   final bool correct;
-
-  Map<String, dynamic> toJson() =>
-      {
-        'text': text,
-        'correct': correct,
-      };
 }
 
