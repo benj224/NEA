@@ -6,34 +6,68 @@ part of 'makepack.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class QuestionAdapter extends TypeAdapter<Question> {
+class HivePackAdapter extends TypeAdapter<HivePack> {
   @override
-  final int typeId = 1;
+  final int typeId = 0;
 
   @override
-  Question read(BinaryReader reader) {
+  HivePack read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Question(
-      cardNo: fields[1] as int,
-      question: fields[2] as String,
-      score: fields[3] as int,
-      answers: (fields[4] as List?)?.cast<Answer>(),
+    return HivePack(
+      title: fields[5] as String,
+      questions: (fields[6] as List).cast<HiveQuestion>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Question obj) {
+  void write(BinaryWriter writer, HivePack obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(2)
+      ..writeByte(5)
+      ..write(obj.title)
+      ..writeByte(6)
+      ..write(obj.questions);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HivePackAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
+  @override
+  final int typeId = 1;
+
+  @override
+  HiveQuestion read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return HiveQuestion(
+      cardNo: fields[1] as int,
+      question: fields[2] as String,
+      answers: (fields[4] as List?)?.cast<HiveAnswer>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, HiveQuestion obj) {
+    writer
+      ..writeByte(3)
       ..writeByte(1)
       ..write(obj.cardNo)
       ..writeByte(2)
       ..write(obj.question)
-      ..writeByte(3)
-      ..write(obj.score)
       ..writeByte(4)
       ..write(obj.answers);
   }
@@ -44,29 +78,29 @@ class QuestionAdapter extends TypeAdapter<Question> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is QuestionAdapter &&
+      other is HiveQuestionAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
 
-class AnswerAdapter extends TypeAdapter<Answer> {
+class HiveAnswerAdapter extends TypeAdapter<HiveAnswer> {
   @override
   final int typeId = 2;
 
   @override
-  Answer read(BinaryReader reader) {
+  HiveAnswer read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Answer(
+    return HiveAnswer(
       text: fields[1] as String,
       correct: fields[2] as bool,
     );
   }
 
   @override
-  void write(BinaryWriter writer, Answer obj) {
+  void write(BinaryWriter writer, HiveAnswer obj) {
     writer
       ..writeByte(2)
       ..writeByte(1)
@@ -81,7 +115,7 @@ class AnswerAdapter extends TypeAdapter<Answer> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AnswerAdapter &&
+      other is HiveAnswerAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

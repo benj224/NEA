@@ -14,6 +14,8 @@ part "makepack.g.dart";
 //load box in main
 //save list of cards to box and use to create widgets prehaps only commit ot box when user is finnished on page instead fo sequentialy
 
+
+
 List<Question> questions = [];
 
 class CreatePack extends StatefulWidget{
@@ -29,7 +31,12 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   Widget build(context){
     return Scaffold(
       appBar: AppBar(title: const Text('List')),
-      body: ListView(children: questions),
+      body: Stack(
+        children: [
+          titleBox,
+          ListView(children: questions),
+        ],
+      ),
       // add items to the to-do list
       floatingActionButton:Stack(
         children: [
@@ -38,7 +45,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             child: FloatingActionButton(
                 onPressed: (){
                   setState(() {
-                    questions.add(Question(cardNo: 0, question: "null", score: 5));
+                    questions.add(Question(cardNo: 0, question: "null"));
                   });
                 },
                 tooltip: 'Add Item',
@@ -48,7 +55,24 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             alignment: Alignment.bottomLeft,
             child: FloatingActionButton(
                 onPressed: (){
-                  ;
+                  List<HiveQuestion> Qst = [];
+                  int cardNo = 0;
+                  HiveAnswer a1;
+                  HiveAnswer a2;
+                  HiveQuestion newQuestion;
+                  HiveAnswer a3;
+                  questions.forEach((question) => {
+                    a1 = HiveAnswer(text: question.ans1Cont.text,correct: question.a1corr),
+                    a2 = HiveAnswer(text: question.ans2Cont.text,correct: question.a2corr),
+                    a3 = HiveAnswer(text: question.ans3Cont.text,correct: question.a3corr),
+                    newQuestion = HiveQuestion(cardNo: cardNo, question: question.question, answers: [a1, a2, a3]),
+                    Qst.add(newQuestion),
+                    cardNo += 1
+                  });
+
+                  HivePack pck = HivePack(title: titleController.text, questions: Qst);
+
+                  // todo add pack title, create pack class and add to flutter box
                 },
                 tooltip: 'Done',
                 child: Icon(Icons.offline_pin)),
@@ -64,46 +88,64 @@ class _CreatePackState extends State<CreatePack>{//GetCards
 
 @HiveType(typeId: 0)
 class HivePack extends HiveObject{
-  HivePack({required this.title})
+  HivePack({required this.title, required this.questions}) : super();
   @HiveField(5)
   final String title;
   @HiveField(6)
-  final List<HiveQuestion> questions = [];
+  final List<HiveQuestion> questions;
 }
 
 @HiveType(typeId: 1)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
-      {required this.cardNo, required this.question, required this.score, this.answers})
+      {required this.cardNo, required this.question, required this.answers})
       : super();
   @HiveField(1)
   final int cardNo;
   @HiveField(2)
   final String question;
-  @HiveField(3)
-  final int score;
   @HiveField(4)
-  List<Answer>? answers = [];
+  List<HiveAnswer>? answers = [];
 }
 
 @HiveType(typeId: 2)
-class Answer{
-  Answer({required this.text, required this.correct}) : super();
+class HiveAnswer extends HiveObject{
+  HiveAnswer({required this.text, required this.correct}) : super();
   @HiveField(1)
   final String text;
   @HiveField(2)
   final bool correct;
 }
 
+TextEditingController titleController = TextEditingController();
+Widget titleBox = SizedBox(
+  height: 50,
+  child: Align(
+    child: TextField(
+      controller: titleController,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          hintText: "Title",
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+      ),
+    ),
+  ),
+);
 
 
 
 class Question extends StatefulWidget{
-  Question({required this.cardNo, required this.question, required this.score, this.answers}) : super();
+  Question({required this.cardNo, required this.question}) : super();
   final int cardNo;
   final String question;
-  final int score;
-  List<Answer>? answers = [];
+  final TextEditingController qstCont = TextEditingController();
+  final TextEditingController ans1Cont = TextEditingController();
+  final TextEditingController ans2Cont = TextEditingController();
+  final TextEditingController ans3Cont = TextEditingController();
+  bool a1corr = false;
+  bool a2corr = false;
+  bool a3corr = false;
+
 
 
   @override
@@ -111,6 +153,8 @@ class Question extends StatefulWidget{
 }
 
 class _QuestionState extends State<Question>{
+
+
   @override
   Widget build(context){
     return Material(
@@ -128,14 +172,24 @@ class _QuestionState extends State<Question>{
                 height: 20,
                 width: MediaQuery.of(context).size.width * 0.425,
                 child: TextField(
+                  controller: widget.qstCont,
                   style: TextStyle(
                   ),
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Question",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
-                  ),
                 ),
+              ),
+            ),
+            Align(
+              child: Checkbox(
+                value: widget.a1corr,
+                onChanged: (bool? value){
+                  setState(() {
+                    if (value = true){
+                      widget.a1corr = true;
+                    }else{
+                      widget.a1corr = false;
+                    }
+                  });
+                },
               ),
             ),
             Align(
@@ -144,6 +198,7 @@ class _QuestionState extends State<Question>{
                 height: 20,
                 width: MediaQuery.of(context).size.width * 0.425,
                 child: TextField(
+                  controller: widget.ans1Cont,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       hintText: "Answer 1",
@@ -158,6 +213,7 @@ class _QuestionState extends State<Question>{
                 height: 20,
                 width: MediaQuery.of(context).size.width * 0.425,
                 child: TextField(
+                  controller: widget.ans2Cont,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       hintText: "Answer 2",
@@ -172,6 +228,7 @@ class _QuestionState extends State<Question>{
                 height: 20,
                 width: MediaQuery.of(context).size.width * 0.425,
                 child: TextField(
+                  controller: widget.ans3Cont,
                   decoration: InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       hintText: "Answer 3",
@@ -188,14 +245,4 @@ class _QuestionState extends State<Question>{
 }
 
 
-
-
-@HiveType(typeId: 2)
-class Answer{
-  Answer({required this.text, required this.correct}) : super();
-  @HiveField(1)
-  final String text;
-  @HiveField(2)
-  final bool correct;
-}
 
