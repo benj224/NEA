@@ -17,6 +17,7 @@ part "makepack.g.dart";
 
 
 List<Question> questions = [];
+TextEditingController titleController = TextEditingController();
 
 class CreatePack extends StatefulWidget{
 
@@ -30,13 +31,15 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   @override
   Widget build(context){
     return Scaffold(
-      appBar: AppBar(title: const Text('List')),
-      body: Stack(
-        children: [
-          titleBox,
-          ListView(children: questions),
-        ],
-      ),
+      appBar: AppBar(title: TextField(
+        controller: titleController,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+            hintText: "Title",
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
+        ),
+      ),),
+      body: ListView(children: questions),
       // add items to the to-do list
       floatingActionButton:Stack(
         children: [
@@ -54,7 +57,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
           Align(
             alignment: Alignment.bottomLeft,
             child: FloatingActionButton(
-                onPressed: (){
+                onPressed: () async{
                   List<HiveQuestion> Qst = [];
                   int cardNo = 0;
                   HiveAnswer a1;
@@ -71,7 +74,9 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   });
 
                   HivePack pck = HivePack(title: titleController.text, questions: Qst);
-
+                  await Hive.openBox(titleController.text);
+                  Box<dynamic> box = Hive.box(titleController.text);
+                  box.put("pack", HivePack);
                   // todo add pack title, create pack class and add to flutter box
                 },
                 tooltip: 'Done',
@@ -117,20 +122,6 @@ class HiveAnswer extends HiveObject{
   final bool correct;
 }
 
-TextEditingController titleController = TextEditingController();
-Widget titleBox = SizedBox(
-  height: 50,
-  child: Align(
-    child: TextField(
-      controller: titleController,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-          hintText: "Title",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
-      ),
-    ),
-  ),
-);
 
 
 
@@ -208,6 +199,20 @@ class _QuestionState extends State<Question>{
               ),
             ),
             Align(
+              child: Checkbox(
+                value: widget.a1corr,
+                onChanged: (bool? value){
+                  setState(() {
+                    if (value = true){
+                      widget.a2corr = true;
+                    }else{
+                      widget.a2corr = false;
+                    }
+                  });
+                },
+              ),
+            ),
+            Align(
               alignment: FractionalOffset(0.9, 0.5),
               child: SizedBox(
                 height: 20,
@@ -235,6 +240,20 @@ class _QuestionState extends State<Question>{
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
                   ),
                 ),
+              ),
+            ),
+            Align(
+              child: Checkbox(
+                value: widget.a1corr,
+                onChanged: (bool? value){
+                  setState(() {
+                    if (value = true){
+                      widget.a1corr = true;
+                    }else{
+                      widget.a1corr = false;
+                    }
+                  });
+                },
               ),
             ),
           ],
