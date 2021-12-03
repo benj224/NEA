@@ -74,9 +74,12 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   });
 
                   HivePack pck = HivePack(title: titleController.text, questions: Qst);
+                  Hive.registerAdapter(HivePackAdapter());
+                  Hive.registerAdapter(HiveQuestionAdapter());
+                  Hive.registerAdapter(HiveAnswerAdapter());
                   await Hive.openBox(titleController.text);
                   Box<dynamic> box = Hive.box(titleController.text);
-                  box.put("pack", HivePack);
+                  box.put("pack", pck);
                   // todo add pack title, create pack class and add to flutter box
                 },
                 tooltip: 'Done',
@@ -94,9 +97,9 @@ class _CreatePackState extends State<CreatePack>{//GetCards
 @HiveType(typeId: 0)
 class HivePack extends HiveObject{
   HivePack({required this.title, required this.questions}) : super();
-  @HiveField(5)
+  @HiveField(0)
   final String title;
-  @HiveField(6)
+  @HiveField(1)
   final List<HiveQuestion> questions;
 }
 
@@ -105,20 +108,20 @@ class HiveQuestion extends HiveObject{
   HiveQuestion(
       {required this.cardNo, required this.question, required this.answers})
       : super();
-  @HiveField(1)
+  @HiveField(0)
   final int cardNo;
-  @HiveField(2)
+  @HiveField(1)
   final String question;
-  @HiveField(4)
+  @HiveField(2)
   List<HiveAnswer>? answers = [];
 }
 
 @HiveType(typeId: 2)
 class HiveAnswer extends HiveObject{
   HiveAnswer({required this.text, required this.correct}) : super();
-  @HiveField(1)
+  @HiveField(0)
   final String text;
-  @HiveField(2)
+  @HiveField(1)
   final bool correct;
 }
 
@@ -170,6 +173,7 @@ class _QuestionState extends State<Question>{
               ),
             ),
             Align(
+              alignment: FractionalOffset(0.5, 0.2),
               child: Checkbox(
                 value: widget.a1corr,
                 onChanged: (bool? value){
@@ -199,8 +203,9 @@ class _QuestionState extends State<Question>{
               ),
             ),
             Align(
+              alignment: FractionalOffset(0.5, 0.5),
               child: Checkbox(
-                value: widget.a1corr,
+                value: widget.a2corr,
                 onChanged: (bool? value){
                   setState(() {
                     if (value = true){
@@ -228,6 +233,21 @@ class _QuestionState extends State<Question>{
               ),
             ),
             Align(
+              alignment: FractionalOffset(0.5, 0.8),
+              child: Checkbox(
+                value: widget.a3corr,
+                onChanged: (bool? value){
+                  setState(() {
+                    if (value = true){
+                      widget.a3corr = true;
+                    }else{
+                      widget.a3corr = false;
+                    }
+                  });
+                },
+              ),
+            ),
+            Align(
               alignment: FractionalOffset(0.9, 0.8),
               child: SizedBox(
                 height: 20,
@@ -240,20 +260,6 @@ class _QuestionState extends State<Question>{
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
                   ),
                 ),
-              ),
-            ),
-            Align(
-              child: Checkbox(
-                value: widget.a1corr,
-                onChanged: (bool? value){
-                  setState(() {
-                    if (value = true){
-                      widget.a1corr = true;
-                    }else{
-                      widget.a1corr = false;
-                    }
-                  });
-                },
               ),
             ),
           ],
