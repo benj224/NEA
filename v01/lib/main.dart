@@ -9,7 +9,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async{
   await Hive.initFlutter();
 
-  await Hive.openBox("PackBox");
+
+
+  await Hive.openBox("TitleBox");
+  Box<dynamic> box = Hive.box("TitleBox");
+  if(!box.containsKey("titles")){
+    box.put("titles", []);
+  }else{
+    List<String> titles = box.get("titles");
+  }
   runApp(MyApp());
 }
 

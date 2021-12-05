@@ -19,6 +19,10 @@ part "makepack.g.dart";
 List<Question> questions = [];
 TextEditingController titleController = TextEditingController();
 
+List<String> titles = [];
+
+
+
 class CreatePack extends StatefulWidget{
 
   @override
