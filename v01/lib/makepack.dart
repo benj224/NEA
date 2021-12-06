@@ -84,6 +84,13 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   await Hive.openBox(titleController.text);
                   Box<dynamic> box = Hive.box(titleController.text);
                   box.put("pack", pck);
+
+                  await Hive.openBox("TitleBox");
+                  Box<dynamic> box2 = Hive.box("TitleBox");
+                  List<String> titleList = box2.get("titles");
+                  titleList.add(titleController.text);
+                  box2.delete("titles");
+                  box2.put("titles", titleList);
                   // todo add pack title, create pack class and add to flutter box
                 },
                 tooltip: 'Done',

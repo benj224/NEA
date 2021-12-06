@@ -15,6 +15,7 @@ void main() async{
   Box<dynamic> box = Hive.box("TitleBox");
   if(!box.containsKey("titles")){
     box.put("titles", []);
+    List<String> titles = [];
   }else{
     List<String> titles = box.get("titles");
   }
@@ -93,8 +94,7 @@ class MyHomePage extends StatelessWidget{
 
 
 class PackDisplay extends StatefulWidget{
-  PackDisplay({this.progress, this.name}) : super();
-  final progress;
+  PackDisplay({this.name}) : super();
   final name;
 
   @override
@@ -123,7 +123,7 @@ class _PackDisplayState extends State<PackDisplay>{
               alignment: FractionalOffset(0.5, 0.3),
               child: CircularProgressIndicator(
                 strokeWidth: 6.0,
-                value: widget.progress,
+                value: 0.5/*widget.progress*/,
               ),
             ),
             Align(
@@ -147,7 +147,7 @@ class MyWidgetState extends State<MyWidget>{
   var _result;
   @override
   void initState(){
-    loadJsonPacks().then((result) {
+    loadPacks().then((result) {
       setState(() {
         _result = result;
       });
@@ -166,18 +166,20 @@ class MyWidgetState extends State<MyWidget>{
 
 
 
-Future<ListView> loadJsonPacks() async{//add null saftey at some point
-  Future<String> json = rootBundle.loadString("assets/json/test.json");
-  String rawJson = await json;
+Future<ListView> loadPacks() async{//add null saftey at some point
 
-  Map<String, dynamic> map = jsonDecode(rawJson);
+  Box<dynamic> box = Hive.box("TitleBox");
+  List<String> titles = box.get("titles");
+  List<Widget> packs = [];
 
-  String title = map["title"];
-  double progress = map["progress"];
+  titles.forEach((title) => {
+    packs.add(PackDisplay(name: title))
+  });
+
 
   return ListView(
     scrollDirection: Axis.horizontal,
-    children: [PackDisplay(progress: progress, name: title,)],
+    children: packs,
   );
 
 }
