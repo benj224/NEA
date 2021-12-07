@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:udemy1/main.dart';
 //import 'package:hive_generator/hive_generator.dart';
 
 //make classes without flutter objects and classes with flutter and on save for pack edditor save values to classes and then commit to box.
@@ -91,6 +92,8 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   titleList.add(titleController.text);
                   box2.delete("titles");
                   box2.put("titles", titleList);
+
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
                   // todo add pack title, create pack class and add to flutter box
                 },
                 tooltip: 'Done',

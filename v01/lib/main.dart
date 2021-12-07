@@ -14,8 +14,8 @@ void main() async{
   await Hive.openBox("TitleBox");
   Box<dynamic> box = Hive.box("TitleBox");
   if(!box.containsKey("titles")){
-    box.put("titles", []);
-    List<String> titles = [];
+    box.put("titles", <String>[]);
+    List<String> titles = <String>[];
   }else{
     List<String> titles = box.get("titles");
   }
@@ -94,8 +94,8 @@ class MyHomePage extends StatelessWidget{
 
 
 class PackDisplay extends StatefulWidget{
-  PackDisplay({this.name}) : super();
-  final name;
+  PackDisplay({required this.name}) : super();
+  final String name;
 
   @override
   _PackDisplayState createState() => _PackDisplayState();
@@ -169,10 +169,11 @@ class MyWidgetState extends State<MyWidget>{
 Future<ListView> loadPacks() async{//add null saftey at some point
 
   Box<dynamic> box = Hive.box("TitleBox");
-  List<String> titles = box.get("titles");
+  List titles = box.get("titles");
+  List<String> _titles = titles.cast<String>();
   List<Widget> packs = [];
 
-  titles.forEach((title) => {
+  _titles.forEach((title) => {
     packs.add(PackDisplay(name: title))
   });
 
