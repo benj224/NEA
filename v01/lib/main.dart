@@ -5,6 +5,7 @@ import 'login.dart';
 import 'makepack.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:developer';
 
 void main() async{
   await Hive.initFlutter();
@@ -14,6 +15,7 @@ void main() async{
   await Hive.openBox("TitleBox");
   Box<dynamic> box = Hive.box("TitleBox");
   if(!box.containsKey("titles")){
+    log("didnt contain titles");
     box.put("titles", <String>[]);
     List<String> titles = <String>[];
   }else{
@@ -21,6 +23,8 @@ void main() async{
   }
   runApp(MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget{
   @override
