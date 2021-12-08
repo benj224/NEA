@@ -17,8 +17,8 @@ class HivePackAdapter extends TypeAdapter<HivePack> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return HivePack(
-      title: fields[5] as String,
-      questions: (fields[6] as List).cast<HiveQuestion>(),
+      title: fields[0] as String,
+      questions: (fields[1] as List).cast<HiveQuestion>(),
     );
   }
 
@@ -26,9 +26,9 @@ class HivePackAdapter extends TypeAdapter<HivePack> {
   void write(BinaryWriter writer, HivePack obj) {
     writer
       ..writeByte(2)
-      ..writeByte(5)
+      ..writeByte(0)
       ..write(obj.title)
-      ..writeByte(6)
+      ..writeByte(1)
       ..write(obj.questions);
   }
 
@@ -54,9 +54,9 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return HiveQuestion(
-      cardNo: fields[1] as int,
-      question: fields[2] as String,
-      answers: (fields[4] as List?)?.cast<HiveAnswer>(),
+      cardNo: fields[0] as int,
+      question: fields[1] as String,
+      answers: (fields[2] as List?)?.cast<HiveAnswer>(),
     );
   }
 
@@ -64,11 +64,11 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
   void write(BinaryWriter writer, HiveQuestion obj) {
     writer
       ..writeByte(3)
-      ..writeByte(1)
+      ..writeByte(0)
       ..write(obj.cardNo)
-      ..writeByte(2)
+      ..writeByte(1)
       ..write(obj.question)
-      ..writeByte(4)
+      ..writeByte(2)
       ..write(obj.answers);
   }
 
@@ -94,8 +94,8 @@ class HiveAnswerAdapter extends TypeAdapter<HiveAnswer> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return HiveAnswer(
-      text: fields[1] as String,
-      correct: fields[2] as bool,
+      text: fields[0] as String,
+      correct: fields[1] as bool,
     );
   }
 
@@ -103,9 +103,9 @@ class HiveAnswerAdapter extends TypeAdapter<HiveAnswer> {
   void write(BinaryWriter writer, HiveAnswer obj) {
     writer
       ..writeByte(2)
-      ..writeByte(1)
+      ..writeByte(0)
       ..write(obj.text)
-      ..writeByte(2)
+      ..writeByte(1)
       ..write(obj.correct);
   }
 

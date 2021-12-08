@@ -10,17 +10,6 @@ import 'dart:developer';
 void main() async{
   await Hive.initFlutter();
 
-
-
-  await Hive.openBox("TitleBox");
-  Box<dynamic> box = Hive.box("TitleBox");
-  if(!box.containsKey("titles")){
-    log("didnt contain titles");
-    box.put("titles", <String>[]);
-    List<String> titles = <String>[];
-  }else{
-    List<String> titles = box.get("titles");
-  }
   runApp(MyApp());
 }
 
@@ -172,21 +161,32 @@ class MyWidgetState extends State<MyWidget>{
 
 Future<ListView> loadPacks() async{//add null saftey at some point
 
-  Box<dynamic> box = Hive.box("TitleBox");
-  List titles = box.get("titles");
-  List<String> _titles = titles.cast<String>();
-  List<Widget> packs = [];
+  Box box = await Hive.openBox("TitleBox");
 
-  _titles.forEach((title) => {
-    packs.add(PackDisplay(name: title))
-  });
+  if(box.get("titles") == null){
+    log("titles null");
+    return ListView();
+  }else{
+    List titles = box.get("titles");
+    log("here1");
+    List<Widget> packs = [];
+
+    if(titles.cast<String>() == null){
+      log("null");
+    }else{
+      List<String> _titles = titles.cast<String>();
+
+      _titles.forEach((title) => {
+        packs.add(PackDisplay(name: title))
+      });
+    }
 
 
-  return ListView(
-    scrollDirection: Axis.horizontal,
-    children: packs,
-  );
-
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: packs,
+    );
+  }
 }
 
 

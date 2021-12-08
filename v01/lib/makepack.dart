@@ -83,17 +83,24 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   Hive.registerAdapter(HivePackAdapter());
                   Hive.registerAdapter(HiveQuestionAdapter());
                   Hive.registerAdapter(HiveAnswerAdapter());
-                  await Hive.openBox(titleController.text);
-                  Box<dynamic> box = Hive.box(titleController.text);
+                  Box box = await Hive.openBox(titleController.text);
                   box.put("pack", pck);
 
 
-                  await Hive.openBox("TitleBox");
-                  Box<dynamic> box2 = Hive.box("TitleBox");
-                  List<String> titleList = box2.get("titles");
-                  titleList.add(titleController.text);
-                  box2.delete("titles");
-                  await box2.put("titles", titleList);
+                  log("here");
+                  Box box2 = await Hive.openBox("TitleBox");
+                  log("here");
+                  if(box2.get("titles") == null){
+                    log("titles2 null");
+                    List<String> _titleList = [titleController.text];
+                    box2.put("titles", _titleList);
+                  }else{
+                    List titleList = box2.get("titles");
+                    List<String> _titleList = titleList.cast<String>();
+                    _titleList.add(titleController.text);
+                    box2.delete("titles");
+                    await box2.put("titles", _titleList);
+                  }
 
                   Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
                   // todo add pack title, create pack class and add to flutter box
