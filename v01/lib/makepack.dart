@@ -80,9 +80,6 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   });
 
                   HivePack pck = HivePack(title: titleController.text, questions: Qst);
-                  Hive.registerAdapter(HivePackAdapter());
-                  Hive.registerAdapter(HiveQuestionAdapter());
-                  Hive.registerAdapter(HiveAnswerAdapter());
                   Box box = await Hive.openBox(titleController.text);
                   box.put("pack", pck);
 
@@ -117,34 +114,34 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   }
 }
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 10)
 class HivePack extends HiveObject{
   HivePack({required this.title, required this.questions}) : super();
-  @HiveField(0)
+  @HiveField(11)
   final String title;
-  @HiveField(1)
+  @HiveField(12)
   final List<HiveQuestion> questions;
 }
 
-@HiveType(typeId: 1)
+@HiveType(typeId: 20)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
       {required this.cardNo, required this.question, required this.answers})
       : super();
-  @HiveField(0)
+  @HiveField(21)
   final int cardNo;
-  @HiveField(1)
+  @HiveField(22)
   final String question;
-  @HiveField(2)
+  @HiveField(23)
   List<HiveAnswer>? answers = [];
 }
 
-@HiveType(typeId: 2)
+@HiveType(typeId: 30)
 class HiveAnswer extends HiveObject{
   HiveAnswer({required this.text, required this.correct}) : super();
-  @HiveField(0)
+  @HiveField(31)
   final String text;
-  @HiveField(1)
+  @HiveField(32)
   final bool correct;
 }
 

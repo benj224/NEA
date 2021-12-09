@@ -9,6 +9,9 @@ import 'dart:developer';
 
 void main() async{
   await Hive.initFlutter();
+  Hive.registerAdapter(HivePackAdapter());
+  Hive.registerAdapter(HiveQuestionAdapter());
+  Hive.registerAdapter(HiveAnswerAdapter());
 
   runApp(MyApp());
 }
@@ -159,7 +162,7 @@ class MyWidgetState extends State<MyWidget>{
 
 
 
-Future<ListView> loadPacks() async{//add null saftey at some point
+Future<ListView> loadPacks() async{//make retrun type widget to return item to add element if no titles
 
   Box box = await Hive.openBox("TitleBox");
 

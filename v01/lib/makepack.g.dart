@@ -8,7 +8,7 @@ part of 'makepack.dart';
 
 class HivePackAdapter extends TypeAdapter<HivePack> {
   @override
-  final int typeId = 0;
+  final int typeId = 10;
 
   @override
   HivePack read(BinaryReader reader) {
@@ -17,8 +17,8 @@ class HivePackAdapter extends TypeAdapter<HivePack> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return HivePack(
-      title: fields[0] as String,
-      questions: (fields[1] as List).cast<HiveQuestion>(),
+      title: fields[11] as String,
+      questions: (fields[12] as List).cast<HiveQuestion>(),
     );
   }
 
@@ -26,9 +26,9 @@ class HivePackAdapter extends TypeAdapter<HivePack> {
   void write(BinaryWriter writer, HivePack obj) {
     writer
       ..writeByte(2)
-      ..writeByte(0)
+      ..writeByte(11)
       ..write(obj.title)
-      ..writeByte(1)
+      ..writeByte(12)
       ..write(obj.questions);
   }
 
@@ -45,7 +45,7 @@ class HivePackAdapter extends TypeAdapter<HivePack> {
 
 class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
   @override
-  final int typeId = 1;
+  final int typeId = 20;
 
   @override
   HiveQuestion read(BinaryReader reader) {
@@ -54,9 +54,9 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return HiveQuestion(
-      cardNo: fields[0] as int,
-      question: fields[1] as String,
-      answers: (fields[2] as List?)?.cast<HiveAnswer>(),
+      cardNo: fields[21] as int,
+      question: fields[22] as String,
+      answers: (fields[23] as List?)?.cast<HiveAnswer>(),
     );
   }
 
@@ -64,11 +64,11 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
   void write(BinaryWriter writer, HiveQuestion obj) {
     writer
       ..writeByte(3)
-      ..writeByte(0)
+      ..writeByte(21)
       ..write(obj.cardNo)
-      ..writeByte(1)
+      ..writeByte(22)
       ..write(obj.question)
-      ..writeByte(2)
+      ..writeByte(23)
       ..write(obj.answers);
   }
 
@@ -85,7 +85,7 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
 
 class HiveAnswerAdapter extends TypeAdapter<HiveAnswer> {
   @override
-  final int typeId = 2;
+  final int typeId = 30;
 
   @override
   HiveAnswer read(BinaryReader reader) {
@@ -94,8 +94,8 @@ class HiveAnswerAdapter extends TypeAdapter<HiveAnswer> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return HiveAnswer(
-      text: fields[0] as String,
-      correct: fields[1] as bool,
+      text: fields[31] as String,
+      correct: fields[32] as bool,
     );
   }
 
@@ -103,9 +103,9 @@ class HiveAnswerAdapter extends TypeAdapter<HiveAnswer> {
   void write(BinaryWriter writer, HiveAnswer obj) {
     writer
       ..writeByte(2)
-      ..writeByte(0)
+      ..writeByte(31)
       ..write(obj.text)
-      ..writeByte(1)
+      ..writeByte(32)
       ..write(obj.correct);
   }
 
