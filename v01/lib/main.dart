@@ -168,7 +168,42 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
 
   if(box.get("titles") == null){
     log("titles null");
-    return ListView();
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Material(
+            elevation: 5,
+            color: Colors.red,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)
+            ),
+            child: Stack(
+                children: [
+                  const Align(
+                    alignment: FractionalOffset(0.5, 0.1),
+                    child: Text(
+                      "You have no packs",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Align(
+                    alignment: FractionalOffset(0.5, 0.5),
+                    child: IconButton(
+                        icon: Icon(Icons.create_outlined),
+                        onPressed: (){
+                          //open the pack creator, then do this for editing packs.
+                        }),
+                  ),
+                ]
+            ),
+          ),
+        ),
+        ]
+
+      );
+
   }else{
     List titles = box.get("titles");
     log("here1");
