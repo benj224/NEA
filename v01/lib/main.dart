@@ -125,6 +125,17 @@ class _PackDisplayState extends State<PackDisplay>{
             Align(
               alignment: FractionalOffset(0.5, 0.32),
               child: Text("Text"),
+            ),
+            Align(
+              alignment: FractionalOffset(0.5, 0.7),
+              child: GestureDetector(
+                child: Icon(Icons.create_rounded),
+                onTap: ()async{
+                  Box box = await Hive.openBox("Globals");
+                  box.put("editbox", widget.name);
+
+                },
+              ),
             )
           ],
         ),

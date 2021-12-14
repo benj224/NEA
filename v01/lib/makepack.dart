@@ -35,6 +35,18 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
+  void initState() async{
+    super.initState();
+    Box box = await Hive.openBox("Globals");
+    if(!box.get("editbox") == null){
+      String name = box.get("editbox");
+      Box pack = await Hive.openBox<HivePack>(name);
+      questions = pack.questions;
+      box.put("editbox", null);
+    }
+  }
+
+  @override
   Widget build(context){
     return Scaffold(
       appBar: AppBar(title: TextField(
@@ -81,7 +93,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
 
                   HivePack pck = HivePack(title: titleController.text, questions: Qst);
                   Box box = await Hive.openBox(titleController.text);
-                  box.put("pack", pck);
+                  box.put(pck.title, pck);
 
 
                   log("here");
