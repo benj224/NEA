@@ -56,7 +56,7 @@ class HiveQuestionAdapter extends TypeAdapter<HiveQuestion> {
     return HiveQuestion(
       cardNo: fields[21] as int,
       question: fields[22] as String,
-      answers: (fields[23] as List?)?.cast<HiveAnswer>(),
+      answers: (fields[23] as List).cast<HiveAnswer>(),
     );
   }
 

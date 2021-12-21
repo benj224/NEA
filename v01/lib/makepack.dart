@@ -5,23 +5,42 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:udemy1/main.dart';
 import 'dart:developer';
-//import 'package:hive_generator/hive_generator.dart';
 
-//make classes without flutter objects and classes with flutter and on save for pack edditor save values to classes and then commit to box.
-
-//maby make class for list of cards to store in hive.
 
 part "makepack.g.dart";
 
-//load box in main
-//save list of cards to box and use to create widgets prehaps only commit ot box when user is finnished on page instead fo sequentialy
+//current issue pack values arent saving
 
 
 
+//List<HiveQuestion> questions = [];
 List<Question> questions = [];
 TextEditingController titleController = TextEditingController();
 
 List<String> titles = [];
+
+
+void setQuestions() async{
+  Box box = await Hive.openBox("Globals");
+  log("opened globals");
+  if(!(box.get("editbox") == null)){
+    String name = box.get("editbox");
+    Box<HivePack> pack = await Hive.openBox<HivePack>(name);
+    HivePack? HivePck = pack.get(name);
+    if (!(HivePck == null)){
+      HivePck.questions.forEach((qst) {
+        Question NewQst = Question(cardNo: qst.cardNo, question: qst.question, answers: qst.answers);
+        questions.add(NewQst);
+        log("added to questions");
+      });
+    }else{
+      log("hivepck null");
+    }
+    box.put("editbox", null);
+  }else{
+    log("box was null");
+  }
+}
 
 
 
@@ -35,15 +54,9 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
-  void initState() async{
+  void initState(){
     super.initState();
-    Box box = await Hive.openBox("Globals");
-    if(!box.get("editbox") == null){
-      String name = box.get("editbox");
-      Box pack = await Hive.openBox<HivePack>(name);
-      questions = pack.questions;
-      box.put("editbox", null);
-    }
+    setQuestions();
   }
 
   @override
@@ -66,7 +79,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             child: FloatingActionButton(
                 onPressed: (){
                   setState(() {
-                    questions.add(Question(cardNo: 0, question: "null"));
+                    questions.add(Question(cardNo: 0, question: "null", answers: [HiveAnswer(text: "Text", correct: false), HiveAnswer(text: "Text", correct: false), HiveAnswer(text: "Text", correct: false)],));
                   });
                 },
                 tooltip: 'Add Item',
@@ -84,6 +97,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   HiveAnswer a3;
                   questions.forEach((question) => {
                     a1 = HiveAnswer(text: question.ans1Cont.text,correct: question.a1corr),
+                    log(question.ans1Cont.text),
                     a2 = HiveAnswer(text: question.ans2Cont.text,correct: question.a2corr),
                     a3 = HiveAnswer(text: question.ans3Cont.text,correct: question.a3corr),
                     newQuestion = HiveQuestion(cardNo: cardNo, question: question.question, answers: [a1, a2, a3]),
@@ -92,23 +106,28 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   });
 
                   HivePack pck = HivePack(title: titleController.text, questions: Qst);
-                  Box box = await Hive.openBox(titleController.text);
-                  box.put(pck.title, pck);
-
-
-                  log("here");
-                  Box box2 = await Hive.openBox("TitleBox");
-                  log("here");
-                  if(box2.get("titles") == null){
-                    log("titles2 null");
-                    List<String> _titleList = [titleController.text];
-                    box2.put("titles", _titleList);
+                  Box box = await Hive.openBox("Globals");
+                  if(box.get("packs") == null){
+                    List<HivePack> PackList = [pck];
+                    box.put("packs", PackList);
                   }else{
-                    List titleList = box2.get("titles");
+                    List PackList = box.get("packs");
+                    List<HivePack> _packList = PackList.cast<HivePack>();
+                    _packList.add(pck);
+                    box.delete("packs");
+                    await box.put("packs", _packList);
+                  }
+
+
+                  if(box.get("titles") == null){
+                    List<String> _titleList = [titleController.text];
+                    box.put("titles", _titleList);
+                  }else{
+                    List titleList = box.get("titles");
                     List<String> _titleList = titleList.cast<String>();
                     _titleList.add(titleController.text);
-                    box2.delete("titles");
-                    await box2.put("titles", _titleList);
+                    box.delete("titles");
+                    await box.put("titles", _titleList);
                   }
 
                   Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
@@ -145,7 +164,7 @@ class HiveQuestion extends HiveObject{
   @HiveField(22)
   final String question;
   @HiveField(23)
-  List<HiveAnswer>? answers = [];
+  final List<HiveAnswer> answers;
 }
 
 @HiveType(typeId: 30)
@@ -161,9 +180,10 @@ class HiveAnswer extends HiveObject{
 
 
 class Question extends StatefulWidget{
-  Question({required this.cardNo, required this.question}) : super();
+  Question({required this.cardNo, required this.question, required this.answers}) : super();
   final int cardNo;
   final String question;
+  final List<HiveAnswer> answers;
   final TextEditingController qstCont = TextEditingController();
   final TextEditingController ans1Cont = TextEditingController();
   final TextEditingController ans2Cont = TextEditingController();
@@ -179,6 +199,18 @@ class Question extends StatefulWidget{
 }
 
 class _QuestionState extends State<Question>{
+
+  @override
+  void initState(){
+    super.initState();
+    widget.qstCont.text = widget.question;
+    widget.ans1Cont.text = widget.answers[0].text;
+    widget.ans2Cont.text = widget.answers[1].text;
+    widget.ans3Cont.text = widget.answers[2].text;
+    widget.a1corr = widget.answers[0].correct;
+    widget.a2corr = widget.answers[1].correct;
+    widget.a3corr = widget.answers[2].correct;
+  }
 
 
   @override

@@ -32,41 +32,6 @@ class MyHomePage extends StatelessWidget{
   @override
   Widget build(context) {
 
-
-/*    final pack = Material(
-      elevation: 5,
-      color: Colors.red,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20)
-      ),
-      child: SizedBox(
-        width: 100,
-        child: Stack(
-          children: [
-            Align(
-              alignment: FractionalOffset(0.5, 0.1),
-              child: Text("Test"),
-            ),
-            Align(
-              alignment: FractionalOffset(0.5, 0.3),
-              child: CircularProgressIndicator(
-                strokeWidth: 6.0,
-                value: 0.5,
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.5, 0.32),
-              child: Text("Text"),
-            )
-          ],
-        ),
-      ),
-    );*/
-
-   // Future<List<Widget>> packFuture = loadJsonPacks();
-
-
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -127,16 +92,33 @@ class _PackDisplayState extends State<PackDisplay>{
               child: Text("Text"),
             ),
             Align(
-              alignment: FractionalOffset(0.5, 0.7),
-              child: GestureDetector(
-                child: Icon(Icons.create_rounded),
-                onTap: ()async{
-                  Box box = await Hive.openBox("Globals");
-                  box.put("editbox", widget.name);
-
-                },
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.create_rounded),
+                    onPressed: () async{
+                      Box box = await Hive.openBox("Globals");
+                      await box.put("editbox", widget.name);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack()));
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () async{
+                      Box box = await Hive.openBox("Globals");
+                      List<HivePack> pcks = box.get("packs");
+                      List<String> titles = box.get("titles");
+                      pcks.forEach((pack) {
+                        if(pack.title == widget.name){
+                          pcks.remove(pack);
+                          titles.remove(widget.name);
+                        }
+                      });
+                    },
+                  ),
+                ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -175,10 +157,9 @@ class MyWidgetState extends State<MyWidget>{
 
 Future<ListView> loadPacks() async{//make retrun type widget to return item to add element if no titles
 
-  Box box = await Hive.openBox("TitleBox");
+  Box box = await Hive.openBox("Globals");
 
   if(box.get("titles") == null){
-    log("titles null");
     return ListView(
       scrollDirection: Axis.horizontal,
       children: [
@@ -203,7 +184,7 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
                     alignment: FractionalOffset(0.5, 0.5),
                     child: IconButton(
                         icon: Icon(Icons.create_outlined),
-                        onPressed: (){
+                        onPressed: () {
                           //open the pack creator, then do this for editing packs.
                         }),
                   ),
