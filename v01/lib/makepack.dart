@@ -20,32 +20,21 @@ TextEditingController titleController = TextEditingController();
 List<String> titles = [];
 
 
-void setQuestions() async{
-  Box box = await Hive.openBox("Globals");
-  log("opened globals");
-  if(!(box.get("editbox") == null)){
-    String name = box.get("editbox");
-    Box<HivePack> pack = await Hive.openBox<HivePack>(name);
-    HivePack? HivePck = pack.get(name);
-    if (!(HivePck == null)){
-      HivePck.questions.forEach((qst) {
-        Question NewQst = Question(cardNo: qst.cardNo, question: qst.question, answers: qst.answers);
-        questions.add(NewQst);
-        log("added to questions");
-      });
-    }else{
-      log("hivepck null");
-    }
-    box.put("editbox", null);
-  }else{
-    log("box was null");
+void setQuestions(HivePack? pack) async{
+  if(!(pack == null)){
+    questions = [];
+    pack.questions.forEach((question) {
+      Question newQst = Question(cardNo: question.cardNo, question: question.question, answers: question.answers);
+      questions.add(newQst);
+    });
   }
 }
 
 
 
 class CreatePack extends StatefulWidget{
-
+  CreatePack({required this.pack}) :super();
+  final HivePack? pack;
   @override
   _CreatePackState createState() => _CreatePackState();
 }
@@ -56,7 +45,9 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   @override
   void initState(){
     super.initState();
-    setQuestions();
+    if(!(widget.pack == null)){
+      setQuestions(widget.pack);
+    }
   }
 
   @override
@@ -89,6 +80,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             alignment: Alignment.bottomLeft,
             child: FloatingActionButton(
                 onPressed: () async{
+
                   List<HiveQuestion> Qst = [];
                   int cardNo = 0;
                   HiveAnswer a1;
@@ -100,13 +92,26 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     log(question.ans1Cont.text),
                     a2 = HiveAnswer(text: question.ans2Cont.text,correct: question.a2corr),
                     a3 = HiveAnswer(text: question.ans3Cont.text,correct: question.a3corr),
-                    newQuestion = HiveQuestion(cardNo: cardNo, question: question.question, answers: [a1, a2, a3]),
+                    newQuestion = HiveQuestion(cardNo: cardNo, question: question.qstCont.text, answers: [a1, a2, a3]),
                     Qst.add(newQuestion),
                     cardNo += 1
                   });
 
                   HivePack pck = HivePack(title: titleController.text, questions: Qst);
                   Box box = await Hive.openBox("Globals");
+                  if(!(box.get("editbox") == null)){
+                    List<dynamic> pcks = box.get("packs");
+                    HivePack? removePack = null;
+                    List<HivePack> newPck = [];
+                    pcks.forEach((pack) {
+                      if(!(pack == box.get("editbox"))){
+                        newPck.add(pack);
+                      }
+                    });
+                    box.delete("packs");
+                    box.put("packs", newPck);
+                  }
+
                   if(box.get("packs") == null){
                     List<HivePack> PackList = [pck];
                     box.put("packs", PackList);

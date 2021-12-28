@@ -45,7 +45,7 @@ class MyHomePage extends StatelessWidget{
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: null)));
         },
       ),
 
@@ -55,8 +55,9 @@ class MyHomePage extends StatelessWidget{
 
 
 class PackDisplay extends StatefulWidget{
-  PackDisplay({required this.name}) : super();
+  PackDisplay({required this.name, required this.hivePack}) : super();
   final String name;
+  final HivePack hivePack;
 
   @override
   _PackDisplayState createState() => _PackDisplayState();
@@ -98,8 +99,8 @@ class _PackDisplayState extends State<PackDisplay>{
                     icon: Icon(Icons.create_rounded),
                     onPressed: () async{
                       Box box = await Hive.openBox("Globals");
-                      await box.put("editbox", widget.name);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack()));
+                      await box.put("editbox", widget.hivePack);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
                     },
                   ),
                   IconButton(
@@ -197,24 +198,20 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
       );
 
   }else{
-    List titles = box.get("titles");
-    log("here1");
-    List<Widget> packs = [];
+    List<dynamic> packs = box.get("packs");
 
-    if(titles.cast<String>() == null){
-      log("null");
-    }else{
-      List<String> _titles = titles.cast<String>();
 
-      _titles.forEach((title) => {
-        packs.add(PackDisplay(name: title))
-      });
-    }
+    List<Widget> displayPacks = [];
+
+    packs.forEach((pack) {
+      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack);
+      displayPacks.add(pck);
+    });
 
 
     return ListView(
       scrollDirection: Axis.horizontal,
-      children: packs,
+      children: displayPacks,
     );
   }
 }
