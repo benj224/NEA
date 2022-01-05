@@ -28,10 +28,14 @@ class MyApp extends StatelessWidget{
   }
 }
 
-class MyHomePage extends StatelessWidget{
+class MyHomePage extends StatefulWidget{
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -39,16 +43,16 @@ class MyHomePage extends StatelessWidget{
 
       body: Center(
         child: Container(
-          height: 200,
-          child: MyWidget()
+            height: 200,
+            child: MyWidget(redraw: () => setState(() {}))
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: null)));
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CreatePack(pack: null)));
         },
       ),
-
     );
   }
 }
@@ -107,13 +111,25 @@ class _PackDisplayState extends State<PackDisplay>{
                     icon: Icon(Icons.delete),
                     onPressed: () async{
                       Box box = await Hive.openBox("Globals");
-                      List<HivePack> pcks = box.get("packs");
-                      List<String> titles = box.get("titles");
+                      List<dynamic> pcks = box.get("packs");
+                      List<HivePack> newPcks = [];
+                      List<String> newTitles = [];
+                      //List<Widget> newDisplayPacks = [];
                       pcks.forEach((pack) {
-                        if(pack.title == widget.name){
-                          pcks.remove(pack);
-                          titles.remove(widget.name);
+                        log(pack.title);
+                        log(widget.name);
+                        if(!(pack.title == widget.name)){
+                          newPcks.add(pack);
+                          newTitles.add(pack.title);
+                          //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
                         }
+                      });
+                      setState(() {
+                        box.delete("packs");
+                        log(newPcks.length.toString());
+                        box.put("packs", newPcks);
+                        box.delete("titles");
+                        box.put("titles", newTitles);
                       });
                     },
                   ),
@@ -129,6 +145,10 @@ class _PackDisplayState extends State<PackDisplay>{
 
 
 class MyWidget extends StatefulWidget{
+  MyWidget({required this.redraw}) : super();
+  final void Function() redraw;
+
+
   @override
   State createState() => MyWidgetState();
 }
@@ -142,6 +162,7 @@ class MyWidgetState extends State<MyWidget>{
         _result = result;
       });
     });
+    widget.redraw();
   }
 
   @override
@@ -155,7 +176,7 @@ class MyWidgetState extends State<MyWidget>{
 
 
 
-
+List<Widget> displayPacks = [];
 Future<ListView> loadPacks() async{//make retrun type widget to return item to add element if no titles
 
   Box box = await Hive.openBox("Globals");
@@ -201,7 +222,6 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
     List<dynamic> packs = box.get("packs");
 
 
-    List<Widget> displayPacks = [];
 
     packs.forEach((pack) {
       PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack);
