@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Container(
             height: 200,
-            child: MyWidget(redraw: () => setState(() {}))
+            child: MyWidget()
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -122,6 +122,9 @@ class _PackDisplayState extends State<PackDisplay>{
                           newPcks.add(pack);
                           newTitles.add(pack.title);
                           //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
+                        }else{
+                          log("pack deleted");
+                          log(pack.title);
                         }
                       });
                       setState(() {
@@ -130,6 +133,7 @@ class _PackDisplayState extends State<PackDisplay>{
                         box.put("packs", newPcks);
                         box.delete("titles");
                         box.put("titles", newTitles);
+                        log(newTitles.length.toString());
                       });
                     },
                   ),
@@ -145,8 +149,6 @@ class _PackDisplayState extends State<PackDisplay>{
 
 
 class MyWidget extends StatefulWidget{
-  MyWidget({required this.redraw}) : super();
-  final void Function() redraw;
 
 
   @override
@@ -162,7 +164,6 @@ class MyWidgetState extends State<MyWidget>{
         _result = result;
       });
     });
-    widget.redraw();
   }
 
   @override

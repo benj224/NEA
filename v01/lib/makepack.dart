@@ -9,7 +9,9 @@ import 'dart:developer';
 
 part "makepack.g.dart";
 
-//current issue pack values arent saving
+//in display pack on delete button pass in parent as parameter then create refresh function in papent and call from child.
+
+
 
 
 
