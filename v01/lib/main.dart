@@ -59,9 +59,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 class PackDisplay extends StatefulWidget{
-  PackDisplay({required this.name, required this.hivePack}) : super();
+  PackDisplay({required this.name, required this.hivePack, required this.parent}) : super();
   final String name;
   final HivePack hivePack;
+  final MyWidget parent;
 
   @override
   _PackDisplayState createState() => _PackDisplayState();
@@ -129,11 +130,10 @@ class _PackDisplayState extends State<PackDisplay>{
                       });
                       setState(() {
                         box.delete("packs");
-                        log(newPcks.length.toString());
                         box.put("packs", newPcks);
                         box.delete("titles");
                         box.put("titles", newTitles);
-                        log(newTitles.length.toString());
+                        widget.parent.refresh();
                       });
                     },
                   ),
@@ -150,21 +150,30 @@ class _PackDisplayState extends State<PackDisplay>{
 
 class MyWidget extends StatefulWidget{
 
+  final Function refresh = () {
+  }; /// try make this work -----------------
 
   @override
   State createState() => MyWidgetState();
+
+
+
+
 }
 
 class MyWidgetState extends State<MyWidget>{
   var _result;
   @override
   void initState(){
-    loadPacks().then((result) {
+    loadPacks(widget).then((result) {
       setState(() {
         _result = result;
       });
     });
   }
+
+
+
 
   @override
   Widget build(context){
@@ -178,7 +187,7 @@ class MyWidgetState extends State<MyWidget>{
 
 
 List<Widget> displayPacks = [];
-Future<ListView> loadPacks() async{//make retrun type widget to return item to add element if no titles
+Future<ListView> loadPacks(MyWidget parent) async{//make retrun type widget to return item to add element if no titles
 
   Box box = await Hive.openBox("Globals");
 
@@ -225,7 +234,7 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
 
 
     packs.forEach((pack) {
-      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack);
+      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack, parent: parent);
       displayPacks.add(pck);
     });
 

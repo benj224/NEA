@@ -45,12 +45,13 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   final TextEditingController _textEditingController = TextEditingController();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    if(!(widget.pack == null)){
+    if (!(widget.pack == null)) {
       setQuestions(widget.pack);
     }
   }
+
 
   @override
   Widget build(context){
