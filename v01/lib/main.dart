@@ -62,7 +62,7 @@ class PackDisplay extends StatefulWidget{
   PackDisplay({required this.name, required this.hivePack, required this.parent}) : super();
   final String name;
   final HivePack hivePack;
-  final MyWidget parent;
+  final Function parent;
 
   @override
   _PackDisplayState createState() => _PackDisplayState();
@@ -133,7 +133,7 @@ class _PackDisplayState extends State<PackDisplay>{
                         box.put("packs", newPcks);
                         box.delete("titles");
                         box.put("titles", newTitles);
-                        widget.parent.refresh();
+                        widget.parent(); ///still not working
                       });
                     },
                   ),
@@ -150,14 +150,8 @@ class _PackDisplayState extends State<PackDisplay>{
 
 class MyWidget extends StatefulWidget{
 
-  final Function refresh = () {
-  }; /// try make this work -----------------
-
   @override
   State createState() => MyWidgetState();
-
-
-
 
 }
 
@@ -165,10 +159,15 @@ class MyWidgetState extends State<MyWidget>{
   var _result;
   @override
   void initState(){
-    loadPacks(widget).then((result) {
+    loadPacks(refresh).then((result) {
       setState(() {
         _result = result;
       });
+    });
+  }
+
+  void refresh(){
+    setState(() {
     });
   }
 
@@ -187,7 +186,7 @@ class MyWidgetState extends State<MyWidget>{
 
 
 List<Widget> displayPacks = [];
-Future<ListView> loadPacks(MyWidget parent) async{//make retrun type widget to return item to add element if no titles
+Future<ListView> loadPacks(Function parent) async{//make retrun type widget to return item to add element if no titles
 
   Box box = await Hive.openBox("Globals");
 
