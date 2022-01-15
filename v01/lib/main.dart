@@ -6,6 +6,7 @@ import 'makepack.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:developer';
+import 'globals.dart' as globals;
 
 void main() async{
   await Hive.initFlutter();
@@ -18,7 +19,9 @@ void main() async{
 
 
 
+
 class MyApp extends StatelessWidget{
+
   @override
   Widget build(BuildContext context){
     return MaterialApp(
@@ -31,9 +34,22 @@ class MyApp extends StatelessWidget{
 class MyHomePage extends StatefulWidget{
   @override
   _MyHomePageState createState() => _MyHomePageState();
+
+
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  @override
+  void initState(){
+    globals.mainPage = widget;
+  }
+
+  void refresh(){
+    setState(() {
+    });
+  }
+
   @override
   Widget build(context) {
     return Scaffold(
@@ -166,10 +182,7 @@ class MyWidgetState extends State<MyWidget>{
     });
   }
 
-  void refresh(){
-    setState(() {
-    });
-  }
+
 
 
 
@@ -186,7 +199,7 @@ class MyWidgetState extends State<MyWidget>{
 
 
 List<Widget> displayPacks = [];
-Future<ListView> loadPacks(Function parent) async{//make retrun type widget to return item to add element if no titles
+Future<ListView> loadPacks() async{//make retrun type widget to return item to add element if no titles
 
   Box box = await Hive.openBox("Globals");
 
@@ -233,7 +246,7 @@ Future<ListView> loadPacks(Function parent) async{//make retrun type widget to r
 
 
     packs.forEach((pack) {
-      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack, parent: parent);
+      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack, parent: parent);///finish changing to globals instead of current.
       displayPacks.add(pck);
     });
 
