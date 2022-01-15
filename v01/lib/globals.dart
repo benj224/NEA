@@ -3,4 +3,5 @@ import 'package:flutter/material.dart';
 import "package:udemy1/main.dart";
 
 
-Widget? mainPage = null;
+late Function mainPage;
+late Function packs;

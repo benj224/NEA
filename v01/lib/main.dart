@@ -15,7 +15,8 @@ void main() async{
   Hive.registerAdapter(HiveAnswerAdapter());
 
   runApp(MyApp());
-}
+}/// trace back directly from list view to try to get better picture
+///
 
 
 
@@ -36,16 +37,19 @@ class MyHomePage extends StatefulWidget{
   _MyHomePageState createState() => _MyHomePageState();
 
 
+
+
 }
 
 class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState(){
-    globals.mainPage = widget;
+    globals.mainPage = Refresh;
   }
 
-  void refresh(){
+  @override
+  void Refresh(){
     setState(() {
     });
   }
@@ -75,10 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 class PackDisplay extends StatefulWidget{
-  PackDisplay({required this.name, required this.hivePack, required this.parent}) : super();
+  PackDisplay({required this.name, required this.hivePack}) : super();
   final String name;
   final HivePack hivePack;
-  final Function parent;
 
   @override
   _PackDisplayState createState() => _PackDisplayState();
@@ -149,7 +152,8 @@ class _PackDisplayState extends State<PackDisplay>{
                         box.put("packs", newPcks);
                         box.delete("titles");
                         box.put("titles", newTitles);
-                        widget.parent(); ///still not working
+                        globals.packs();
+                        globals.mainPage(); ///still not working
                       });
                     },
                   ),
@@ -175,7 +179,16 @@ class MyWidgetState extends State<MyWidget>{
   var _result;
   @override
   void initState(){
-    loadPacks(refresh).then((result) {
+    globals.packs = LdPks;
+    loadPacks().then((result) {
+      setState(() {
+        _result = result;
+      });
+    });
+  }
+
+  void LdPks(){
+    loadPacks().then((result) {
       setState(() {
         _result = result;
       });
@@ -246,7 +259,7 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
 
 
     packs.forEach((pack) {
-      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack, parent: parent);///finish changing to globals instead of current.
+      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack);///finish changing to globals instead of current.
       displayPacks.add(pck);
     });
 
