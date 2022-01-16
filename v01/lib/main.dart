@@ -43,14 +43,59 @@ class MyHomePage extends StatefulWidget{
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  ListView listWidgets = ListView(
+      scrollDirection: Axis.horizontal,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Material(
+            elevation: 5,
+            color: Colors.red,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)
+            ),
+            child: Stack(
+                children: [
+                  const Align(
+                    alignment: FractionalOffset(0.5, 0.1),
+                    child: Text(
+                      "You have no packs",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Align(
+                    alignment: FractionalOffset(0.5, 0.5),
+                    child: IconButton(
+                        icon: Icon(Icons.create_outlined),
+                        onPressed: () {
+                          //open the pack creator, then do this for editing packs.
+                        }),
+                  ),
+                ]
+            ),
+          ),
+        ),
+      ]
+
+  );///not being overridden for some reason.
+
   @override
-  void initState(){
-    globals.mainPage = Refresh;
+  void initState() {
+    super.initState();
+    globals.refresh = Refresh;
+    ldPck();
+  }
+
+  @override
+  void ldPck() async{
+    log("here");
+    listWidgets = await loadPacks();
   }
 
   @override
   void Refresh(){
     setState(() {
+      listWidgets = loadPacks as ListView;
     });
   }
 
@@ -64,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Container(
             height: 200,
-            child: MyWidget()
+            child: listWidgets
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -152,8 +197,7 @@ class _PackDisplayState extends State<PackDisplay>{
                         box.put("packs", newPcks);
                         box.delete("titles");
                         box.put("titles", newTitles);
-                        globals.packs();
-                        globals.mainPage(); ///still not working
+                        globals.refresh();
                       });
                     },
                   ),
@@ -176,10 +220,9 @@ class MyWidget extends StatefulWidget{
 }
 
 class MyWidgetState extends State<MyWidget>{
-  var _result;
+  late ListView _result;
   @override
   void initState(){
-    globals.packs = LdPks;
     loadPacks().then((result) {
       setState(() {
         _result = result;
