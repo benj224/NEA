@@ -44,10 +44,10 @@ class MyHomePage extends StatefulWidget{
 class _MyHomePageState extends State<MyHomePage> {
 
   ListView listWidgets = ListView(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical,
       children: [
         SizedBox(
-          width: 100,
+          height: 100,
           child: Material(
             elevation: 5,
             color: Colors.red,
@@ -212,7 +212,7 @@ class _PackDisplayState extends State<PackDisplay>{
 }
 
 
-class MyWidget extends StatefulWidget{
+class MyWidget extends StatefulWidget{/// update to use listview builder method at https://www.kindacode.com/article/flutter-swipe-to-remove-items-from-a-listview/
 
   @override
   State createState() => MyWidgetState();
@@ -260,11 +260,58 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
   Box box = await Hive.openBox("Globals");
 
   if(box.get("titles") == null){
-    return ListView(
-      scrollDirection: Axis.horizontal,
+    return ListView.builder(
+      itemCount: myProducts.length,
+      itemBuilder: (BuildContext ctx, index) {
+        // Display the list item
+        return Dismissible(
+          key: UniqueKey(),
+
+          // only allows the user swipe from right to left
+          direction: DismissDirection.endToStart,
+
+          // Remove this product from the list
+          // In production enviroment, you may want to send some request to delete it on server side
+          onDismissed: (_){
+            setState(() {
+              myProducts.removeAt(index);
+            });
+          },
+
+          // Display item's title, price...
+          child: Card(
+            margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            child: ListTile(
+              leading: CircleAvatar(
+                child: Text(myProducts[index]["id"].toString()),
+              ),
+              title: Text(myProducts[index]["title"]),
+              subtitle:
+              Text("\$${myProducts[index]["price"].toString()}"),
+              trailing: Icon(Icons.arrow_back),
+            ),
+          ),
+
+          // This will show up when the user performs dismissal action
+          // It is a red background and a trash icon
+          background: Container(
+            color: Colors.red,
+            margin: EdgeInsets.symmetric(horizontal: 15),
+            alignment: Alignment.centerRight,
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+          ),
+        );
+      },
+    ),
+
+      /*ListView(
+      scrollDirection: Axis.vertical,
       children: [
         SizedBox(
-          width: 100,
+          height: 100,
           child: Material(
             elevation: 5,
             color: Colors.red,
@@ -294,7 +341,7 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
         ),
         ]
 
-      );
+      );*/
 
   }else{
     List<dynamic> packs = box.get("packs");
