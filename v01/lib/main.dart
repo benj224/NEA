@@ -15,8 +15,7 @@ void main() async{
   Hive.registerAdapter(HiveAnswerAdapter());
 
   runApp(MyApp());
-}/// trace back directly from list view to try to get better picture
-///
+}/// probably fixed main problem now fix current pack updateing function.
 
 
 
@@ -77,13 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ]
 
-  );///not being overridden for some reason.
+  );
 
   @override
   void initState() {
     super.initState();
-    globals.refresh = Refresh;
-    ldPck();
+    ldPck();  /// might have to revert this back if shit brakes
   }
 
   @override
@@ -115,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CreatePack(pack: null)));
+              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
         },
       ),
     );
@@ -172,7 +170,7 @@ class _PackDisplayState extends State<PackDisplay>{
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
                     },
                   ),
-                  IconButton(
+                  /*IconButton(
                     icon: Icon(Icons.delete),
                     onPressed: () async{
                       Box box = await Hive.openBox("Globals");
@@ -200,7 +198,7 @@ class _PackDisplayState extends State<PackDisplay>{
                         globals.refresh();
                       });
                     },
-                  ),
+                  ),*/
                 ],
               ),
             ),
@@ -260,54 +258,7 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
   Box box = await Hive.openBox("Globals");
 
   if(box.get("titles") == null){
-    return ListView.builder(
-      itemCount: myProducts.length,
-      itemBuilder: (BuildContext ctx, index) {
-        // Display the list item
-        return Dismissible(
-          key: UniqueKey(),
-
-          // only allows the user swipe from right to left
-          direction: DismissDirection.endToStart,
-
-          // Remove this product from the list
-          // In production enviroment, you may want to send some request to delete it on server side
-          onDismissed: (_){
-            setState(() {
-              myProducts.removeAt(index);
-            });
-          },
-
-          // Display item's title, price...
-          child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            child: ListTile(
-              leading: CircleAvatar(
-                child: Text(myProducts[index]["id"].toString()),
-              ),
-              title: Text(myProducts[index]["title"]),
-              subtitle:
-              Text("\$${myProducts[index]["price"].toString()}"),
-              trailing: Icon(Icons.arrow_back),
-            ),
-          ),
-
-          // This will show up when the user performs dismissal action
-          // It is a red background and a trash icon
-          background: Container(
-            color: Colors.red,
-            margin: EdgeInsets.symmetric(horizontal: 15),
-            alignment: Alignment.centerRight,
-            child: Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ),
-        );
-      },
-    ),
-
-      /*ListView(
+    return ListView(
       scrollDirection: Axis.vertical,
       children: [
         SizedBox(
@@ -341,7 +292,7 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
         ),
         ]
 
-      );*/
+      );
 
   }else{
     List<dynamic> packs = box.get("packs");

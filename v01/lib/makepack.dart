@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:udemy1/main.dart';
 import 'dart:developer';
+import 'globals.dart' as globals;
 
 
 part "makepack.g.dart";
@@ -36,7 +37,7 @@ void setQuestions(HivePack? pack) async{
 
 class CreatePack extends StatefulWidget{
   CreatePack({required this.pack}) :super();
-  final HivePack? pack;
+  final HivePack pack;
   @override
   _CreatePackState createState() => _CreatePackState();
 }
@@ -137,12 +138,40 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     box.delete("titles");
                     await box.put("titles", _titleList);
                   }
-
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
-                  // todo add pack title, create pack class and add to flutter box
+                  Navigator.pop(context);
                 },
                 tooltip: 'Done',
                 child: Icon(Icons.offline_pin)),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: FloatingActionButton(
+              onPressed: () async{
+                Box box = await Hive.openBox("Globals");
+                List<dynamic> pcks = box.get("packs");
+                List<HivePack> newPcks = [];
+                List<String> newTitles = [];
+                //List<Widget> newDisplayPacks = [];
+                pcks.forEach((pack) {
+                  log(pack.title);
+                  log(widget.pack.title);
+                  if(!(pack.title == widget.pack.title)){
+                    newPcks.add(pack);
+                    newTitles.add(pack.title);
+                    //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
+                  }else{
+                    log("pack deleted");
+                    log(pack.title);
+                  }
+                });
+                box.delete("packs");
+                box.put("packs", newPcks);
+                box.delete("titles");
+                box.put("titles", newTitles);
+
+                Navigator.pop(context);
+                },
+            ),
           )
         ],
       )
