@@ -42,60 +42,18 @@ class MyHomePage extends StatefulWidget{
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  ListView listWidgets = ListView(
-      scrollDirection: Axis.vertical,
-      children: [
-        SizedBox(
-          height: 100,
-          child: Material(
-            elevation: 5,
-            color: Colors.red,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20)
-            ),
-            child: Stack(
-                children: [
-                  const Align(
-                    alignment: FractionalOffset(0.5, 0.1),
-                    child: Text(
-                      "You have no packs",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Align(
-                    alignment: FractionalOffset(0.5, 0.5),
-                    child: IconButton(
-                        icon: Icon(Icons.create_outlined),
-                        onPressed: () {
-                          //open the pack creator, then do this for editing packs.
-                        }),
-                  ),
-                ]
-            ),
-          ),
-        ),
-      ]
-
-  );
+  var _result;
 
   @override
   void initState() {
-    super.initState();
-    ldPck();  /// might have to revert this back if shit brakes
-  }
+    loadPacks().then((result) {
+      setState(() {
+        _result = result;
+      });
 
-  @override
-  void ldPck() async{
-    log("here");
-    listWidgets = await loadPacks();
-  }
-
-  @override
-  void Refresh(){
-    setState(() {
-      listWidgets = loadPacks as ListView;
     });
   }
+
 
   @override
   Widget build(context) {
@@ -107,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Container(
             height: 200,
-            child: listWidgets
+            child: _result,
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -254,10 +212,12 @@ class MyWidgetState extends State<MyWidget>{
 
 List<Widget> displayPacks = [];
 Future<ListView> loadPacks() async{//make retrun type widget to return item to add element if no titles
+  displayPacks = [];
 
   Box box = await Hive.openBox("Globals");
 
   if(box.get("titles") == null){
+    log("titles were null when loading");
     return ListView(
       scrollDirection: Axis.vertical,
       children: [
@@ -304,7 +264,8 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
       displayPacks.add(pck);
     });
 
-
+    log("length of widgets when returning listview");
+    log(displayPacks.length.toString());
     return ListView(
       scrollDirection: Axis.horizontal,
       children: displayPacks,

@@ -137,8 +137,10 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     _titleList.add(titleController.text);
                     box.delete("titles");
                     await box.put("titles", _titleList);
+                    log("title not null in makepack");
+                    log(_titleList.length.toString());
                   }
-                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
                 },
                 tooltip: 'Done',
                 child: Icon(Icons.offline_pin)),
@@ -169,7 +171,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                 box.delete("titles");
                 box.put("titles", newTitles);
 
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
                 },
             ),
           )
