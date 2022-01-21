@@ -2,28 +2,76 @@ import "dart:convert";
 import "package:flutter/services.dart";
 import "package:flutter/material.dart";
 import 'login.dart';
+import "questions.dart";
 import 'makepack.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:developer';
+import 'package:awesome_notifications/awesome_notifications.dart';
+
 import 'globals.dart' as globals;
 
 void main() async{
+  //initialize Awesome Notifications
+  AwesomeNotifications().initialize(
+    // set the icon to null if you want to use the default app icon
+      'resource://drawable/res_app_icon',
+      [
+        NotificationChannel(
+            channelGroupKey: 'basic_channel_group',
+            channelKey: 'basic_channel',
+            channelName: 'Basic notifications',
+            channelDescription: 'Notification channel for basic tests',
+            defaultColor: Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ],
+      // Channel groups are only visual and are not required
+      channelGroups: [
+        NotificationChannelGroup(
+            channelGroupkey: 'basic_channel_group',
+            channelGroupName: 'Basic group')
+      ],
+      debug: true
+  );
+
+  //check permissions for notification access
+  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    if (!isAllowed) {
+      // This is just a basic example. For real apps, you must show some
+      // friendly dialog box before call the request method.
+      // This is very important to not harm the user experience
+      AwesomeNotifications().requestPermissionToSendNotifications();
+    }
+  });
+
+
+
   await Hive.initFlutter();
   Hive.registerAdapter(HivePackAdapter());
   Hive.registerAdapter(HiveQuestionAdapter());
   Hive.registerAdapter(HiveAnswerAdapter());
 
+
+
   runApp(MyApp());
-}/// probably fixed main problem now fix current pack updateing function.
+}
 
 
 
 
 class MyApp extends StatelessWidget{
 
+
   @override
   Widget build(BuildContext context){
+
+    AwesomeNotifications().actionStream.listen(
+            (ReceivedNotification receivedNotification){
+
+          log(receivedNotification.id.toString());
+        }
+    );
+
     return MaterialApp(
       title: "Flutter App",
       home: MyHomePage(),
@@ -70,8 +118,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          sendNotification();
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
+
         },
       ),
     );
@@ -128,35 +178,6 @@ class _PackDisplayState extends State<PackDisplay>{
                       Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
                     },
                   ),
-                  /*IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () async{
-                      Box box = await Hive.openBox("Globals");
-                      List<dynamic> pcks = box.get("packs");
-                      List<HivePack> newPcks = [];
-                      List<String> newTitles = [];
-                      //List<Widget> newDisplayPacks = [];
-                      pcks.forEach((pack) {
-                        log(pack.title);
-                        log(widget.name);
-                        if(!(pack.title == widget.name)){
-                          newPcks.add(pack);
-                          newTitles.add(pack.title);
-                          //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
-                        }else{
-                          log("pack deleted");
-                          log(pack.title);
-                        }
-                      });
-                      setState(() {
-                        box.delete("packs");
-                        box.put("packs", newPcks);
-                        box.delete("titles");
-                        box.put("titles", newTitles);
-                        globals.refresh();
-                      });
-                    },
-                  ),*/
                 ],
               ),
             ),
@@ -168,8 +189,7 @@ class _PackDisplayState extends State<PackDisplay>{
 }
 
 
-class MyWidget extends StatefulWidget{/// update to use listview builder method at https://www.kindacode.com/article/flutter-swipe-to-remove-items-from-a-listview/
-
+class MyWidget extends StatefulWidget{
   @override
   State createState() => MyWidgetState();
 
@@ -260,14 +280,14 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
 
 
     packs.forEach((pack) {
-      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack);///finish changing to globals instead of current.
+      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack);
       displayPacks.add(pck);
     });
 
     log("length of widgets when returning listview");
     log(displayPacks.length.toString());
     return ListView(
-      scrollDirection: Axis.horizontal,
+      scrollDirection: Axis.vertical,
       children: displayPacks,
     );
   }

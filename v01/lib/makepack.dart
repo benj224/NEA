@@ -10,13 +10,6 @@ import 'globals.dart' as globals;
 
 part "makepack.g.dart";
 
-//in display pack on delete button pass in parent as parameter then create refresh function in papent and call from child.
-
-
-
-
-
-//List<HiveQuestion> questions = [];
 List<Question> questions = [];
 TextEditingController titleController = TextEditingController();
 
