@@ -1,4 +1,5 @@
 import "dart:convert";
+import 'dart:html';
 import "package:flutter/services.dart";
 import "package:flutter/material.dart";
 import 'login.dart';
@@ -25,18 +26,14 @@ void main() async{
             defaultColor: Color(0xFF9D50DD),
             ledColor: Colors.white)
       ],
-      // Channel groups are only visual and are not required
-      channelGroups: [
-        NotificationChannelGroup(
-            channelGroupkey: 'basic_channel_group',
-            channelGroupName: 'Basic group')
-      ],
-      debug: true
   );
 
   //check permissions for notification access
   AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+    Future<PermissionStatus> permissionStatus =
     if (!isAllowed) {
+      log("notifications not allowed");
+
       // This is just a basic example. For real apps, you must show some
       // friendly dialog box before call the request method.
       // This is very important to not harm the user experience
@@ -67,8 +64,8 @@ class MyApp extends StatelessWidget{
 
     AwesomeNotifications().actionStream.listen(
             (ReceivedNotification receivedNotification){
-
-          log(receivedNotification.id.toString());
+              log("event recieved");
+              log(receivedNotification.id.toString());
         }
     );
 
@@ -112,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       body: Center(
         child: Container(
-            height: 200,
+            height: 600,
             child: _result,
         ),
       ),
