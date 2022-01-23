@@ -1,12 +1,9 @@
-import "dart:convert";
-import 'dart:html';
-import "package:flutter/services.dart";
+
 import "package:flutter/material.dart";
-import 'login.dart';
-import "questions.dart";
 import 'makepack.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter/widgets.dart';
 import 'dart:developer';
 import 'package:awesome_notifications/awesome_notifications.dart';
 
@@ -16,30 +13,16 @@ void main() async{
   //initialize Awesome Notifications
   AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
-      'resource://drawable/res_app_icon',
+    null,
       [
         NotificationChannel(
-            channelGroupKey: 'basic_channel_group',
-            channelKey: 'basic_channel',
+            channelKey: 'awesome_notifications',
             channelName: 'Basic notifications',
             channelDescription: 'Notification channel for basic tests',
             defaultColor: Color(0xFF9D50DD),
             ledColor: Colors.white)
       ],
   );
-
-  //check permissions for notification access
-  AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-    Future<PermissionStatus> permissionStatus =
-    if (!isAllowed) {
-      log("notifications not allowed");
-
-      // This is just a basic example. For real apps, you must show some
-      // friendly dialog box before call the request method.
-      // This is very important to not harm the user experience
-      AwesomeNotifications().requestPermissionToSendNotifications();
-    }
-  });
 
 
 
@@ -87,16 +70,117 @@ class MyHomePage extends StatefulWidget{
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  bool _notificationsAllowed = false;
+
   var _result;
 
   @override
   void initState() {
+    //check permissions for notification access
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      _notificationsAllowed = isAllowed;
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
+    globals.sendNote = sendNotification;
+
     loadPacks().then((result) {
       setState(() {
         _result = result;
       });
 
     });
+  }
+
+  Future<void> requestUserPermission() async {
+    showDialog(
+        context: context,
+        builder: (_) =>
+            AlertDialog(
+              title: Text("Notification Access Required"),
+              content: Text("This App required access to notificatins to function"),
+              actions: <Widget>[
+                TextButton(
+                    onPressed: () async {
+                      Navigator.pop(context, "Cancel");
+                      await AwesomeNotifications().requestPermissionToSendNotifications();
+                      _notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                      setState(() {
+                        _notificationsAllowed = _notificationsAllowed;
+                      });
+                    },
+                    child: Text("Cancel")
+                ),
+                TextButton(
+                    onPressed: () => Navigator.pop(context, "OK"),
+                    child: Text("OK")
+                )
+              ],
+            )
+            /*NetworkGiffyDialog(
+              buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
+              buttonCancelText: Text('Later', style: TextStyle(color: Colors.white)),
+              buttonCancelColor: Colors.grey,
+              buttonOkColor: Colors.deepPurple,
+              buttonRadius: 0.0,
+              image: Image.asset("assets/images/animated-bell.gif", fit: BoxFit.cover),
+              title: Text('Get Notified!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 22.0,
+                      fontWeight: FontWeight.w600)
+              ),
+              description: Text('Allow Awesome Notifications to send to you beautiful notifications!',
+                textAlign: TextAlign.center,
+              ),
+              entryAnimation: EntryAnimation.DEFAULT,
+              onCancelButtonPressed: () async {
+                Navigator.of(context).pop();
+                _notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                setState(() {
+                  _notificationsAllowed = _notificationsAllowed;
+                });
+              },
+              onOkButtonPressed: () async {
+                Navigator.of(context).pop();
+                await AwesomeNotifications().requestPermissionToSendNotifications();
+                _notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                setState(() {
+                  _notificationsAllowed = _notificationsAllowed;
+                });
+              },
+            )*/
+    );
+  }
+
+  void sendNotification() async {
+
+    if(!_notificationsAllowed){
+      await requestUserPermission();
+    }
+
+    if(!_notificationsAllowed){
+      return;
+    }
+
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: 100,
+            channelKey: "basic_channel",
+            title: "Huston! The eagle has landed!",
+            body: "A small step for a man, but a giant leap to Flutter's community!",
+            notificationLayout: NotificationLayout.BigPicture,
+            largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
+            bigPicture: "https://www.dw.com/image/49519617_303.jpg",
+            showWhen: true,
+            payload: {
+              "secret": "Awesome Notifications Rocks!"
+            }
+        )
+    );
+
   }
 
 
@@ -115,10 +199,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          sendNotification();
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
-
         },
       ),
     );
@@ -228,7 +310,7 @@ class MyWidgetState extends State<MyWidget>{
 
 
 List<Widget> displayPacks = [];
-Future<ListView> loadPacks() async{//make retrun type widget to return item to add element if no titles
+Future<ListView> loadPacks() async{
   displayPacks = [];
 
   Box box = await Hive.openBox("Globals");
@@ -260,7 +342,7 @@ Future<ListView> loadPacks() async{//make retrun type widget to return item to a
                     child: IconButton(
                         icon: Icon(Icons.create_outlined),
                         onPressed: () {
-                          //open the pack creator, then do this for editing packs.
+                          ///open the pack creator, then do this for editing packs.
                         }),
                   ),
                 ]

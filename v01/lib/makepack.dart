@@ -18,7 +18,6 @@ List<String> titles = [];
 
 void setQuestions(HivePack? pack) async{
   if(!(pack == null)){
-    questions = [];
     pack.questions.forEach((question) {
       Question newQst = Question(cardNo: question.cardNo, question: question.question, answers: question.answers);
       questions.add(newQst);
@@ -66,7 +65,9 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
                 onPressed: (){
+                  globals.sendNote();
                   setState(() {
+                    /// add new page for creating question instead.
                     questions.add(Question(cardNo: 0, question: "null", answers: [HiveAnswer(text: "Text", correct: false), HiveAnswer(text: "Text", correct: false), HiveAnswer(text: "Text", correct: false)],));
                   });
                 },
@@ -142,6 +143,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             alignment: Alignment.bottomCenter,
             child: FloatingActionButton(
               onPressed: () async{
+
                 Box box = await Hive.openBox("Globals");
                 List<dynamic> pcks = box.get("packs");
                 List<HivePack> newPcks = [];

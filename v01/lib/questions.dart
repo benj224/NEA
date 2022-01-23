@@ -4,21 +4,15 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:udemy1/main.dart';
 import 'dart:developer';
+import 'package:flutter/widgets.dart';
 import 'globals.dart' as globals;
 
 ///change compilesdkversion and target sdk version to 31
 
-void sendNotification(){
-  log("sending notification...");
-  AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: 10,
-          channelKey: 'inbox',
-          title: 'Simple Notification',
-          body: 'Simple body'
-      ),
-    actionButtons: [NotificationActionButton(key: "A", label: "A"),
-                    NotificationActionButton(key: "B", label: "B"),
-                    NotificationActionButton(key: "C", label: "C"),]
-  );
+
+void setQuestions(){
+  ///add stats to each question to calculate frequency and methods of asking.
+  ///set up x length repeating schedule which is then deleted every time packs change and run this function again
 }
+
+
