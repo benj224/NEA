@@ -90,7 +90,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     log(question.ans1Cont.text),
                     a2 = HiveAnswer(text: question.ans2Cont.text,correct: question.a2corr),
                     a3 = HiveAnswer(text: question.ans3Cont.text,correct: question.a3corr),
-                    newQuestion = HiveQuestion(cardNo: cardNo, question: question.qstCont.text, answers: [a1, a2, a3]),
+                    newQuestion = HiveQuestion(cardNo: cardNo, question: question.qstCont.text, answers: [a1, a2, a3], attempted: 0, incorrect: 0),
                     Qst.add(newQuestion),
                     cardNo += 1
                   });
@@ -186,12 +186,13 @@ class HivePack extends HiveObject{
   final String title;
   @HiveField(12)
   final List<HiveQuestion> questions;
+
 }
 
 @HiveType(typeId: 20)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
-      {required this.cardNo, required this.question, required this.answers})
+      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.incorrect})
       : super();
   @HiveField(21)
   final int cardNo;
@@ -199,6 +200,10 @@ class HiveQuestion extends HiveObject{
   final String question;
   @HiveField(23)
   final List<HiveAnswer> answers;
+  @HiveField(24)
+  final int attempted;
+  @HiveField(25)
+  final int incorrect;
 }
 
 @HiveType(typeId: 30)

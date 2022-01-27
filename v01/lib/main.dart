@@ -119,39 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ],
             )
-            /*NetworkGiffyDialog(
-              buttonOkText: Text('Allow', style: TextStyle(color: Colors.white)),
-              buttonCancelText: Text('Later', style: TextStyle(color: Colors.white)),
-              buttonCancelColor: Colors.grey,
-              buttonOkColor: Colors.deepPurple,
-              buttonRadius: 0.0,
-              image: Image.asset("assets/images/animated-bell.gif", fit: BoxFit.cover),
-              title: Text('Get Notified!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.w600)
-              ),
-              description: Text('Allow Awesome Notifications to send to you beautiful notifications!',
-                textAlign: TextAlign.center,
-              ),
-              entryAnimation: EntryAnimation.DEFAULT,
-              onCancelButtonPressed: () async {
-                Navigator.of(context).pop();
-                _notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
-                setState(() {
-                  _notificationsAllowed = _notificationsAllowed;
-                });
-              },
-              onOkButtonPressed: () async {
-                Navigator.of(context).pop();
-                await AwesomeNotifications().requestPermissionToSendNotifications();
-                _notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
-                setState(() {
-                  _notificationsAllowed = _notificationsAllowed;
-                });
-              },
-            )*/
+
     );
   }
 
@@ -180,7 +148,6 @@ class _MyHomePageState extends State<MyHomePage> {
             }
         )
     );
-
   }
 
 
