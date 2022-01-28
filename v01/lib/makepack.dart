@@ -223,13 +223,7 @@ class Question extends StatefulWidget{
   final int cardNo;
   final String question;
   final List<HiveAnswer> answers;
-  final TextEditingController qstCont = TextEditingController();
-  final TextEditingController ans1Cont = TextEditingController();
-  final TextEditingController ans2Cont = TextEditingController();
-  final TextEditingController ans3Cont = TextEditingController();
-  bool a1corr = false;
-  bool a2corr = false;
-  bool a3corr = false;
+
 
 
 
@@ -265,15 +259,7 @@ class _QuestionState extends State<Question>{
           children: [
             Align(
               alignment: FractionalOffset(0.05, 0.2),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.qstCont,
-                  style: TextStyle(
-                  ),
-                ),
-              ),
+              child: Text(),///fill
             ),
             Align(
               alignment: FractionalOffset(0.5, 0.2),
@@ -292,18 +278,7 @@ class _QuestionState extends State<Question>{
             ),
             Align(
               alignment: FractionalOffset(0.9, 0.2),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.ans1Cont,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Answer 1",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
-                  ),
-                ),
-              ),
+              child: Text(),///fill
             ),
             Align(
               alignment: FractionalOffset(0.5, 0.5),
@@ -322,18 +297,7 @@ class _QuestionState extends State<Question>{
             ),
             Align(
               alignment: FractionalOffset(0.9, 0.5),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.ans2Cont,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Answer 2",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
-                  ),
-                ),
-              ),
+              child: Text()///fill
             ),
             Align(
               alignment: FractionalOffset(0.5, 0.8),
@@ -352,18 +316,7 @@ class _QuestionState extends State<Question>{
             ),
             Align(
               alignment: FractionalOffset(0.9, 0.8),
-              child: SizedBox(
-                height: 20,
-                width: MediaQuery.of(context).size.width * 0.425,
-                child: TextField(
-                  controller: widget.ans3Cont,
-                  decoration: InputDecoration(
-                      contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      hintText: "Answer 3",
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
-                  ),
-                ),
-              ),
+              child: Text("")///fill
             ),
           ],
         ),
