@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:udemy1/main.dart';
+import 'package:udemy1/makequestion.dart';
 import 'dart:developer';
 import 'globals.dart' as globals;
 
 
 part "makepack.g.dart";
 
-List<Question> questions = [];
+///make on tap function for questions wich deletes them and sends to make question with the question in.
+
+
 TextEditingController titleController = TextEditingController();
 
 List<String> titles = [];
@@ -19,8 +22,8 @@ List<String> titles = [];
 void setQuestions(HivePack? pack) async{
   if(!(pack == null)){
     pack.questions.forEach((question) {
-      Question newQst = Question(cardNo: question.cardNo, question: question.question, answers: question.answers);
-      questions.add(newQst);
+      Question newQst = Question(cardNo: question.cardNo, question: question.question, answers: question.answers, hiveQuestion: question,);
+      globals.questions.add(newQst);
     });
   }
 }
@@ -40,8 +43,13 @@ class _CreatePackState extends State<CreatePack>{//GetCards
   @override
   void initState() {
     super.initState();
-    if (!(widget.pack == null)) {
+    if (!(widget.pack == null)) {///wtf is this cant be null
       setQuestions(widget.pack);
+    }
+    if(globals.newQuestion != null){
+      HiveQuestion NNqt = globals.newQuestion!;
+      globals.questions.add(Question(cardNo: 0, hiveQuestion: NNqt, answers: NNqt.answers, question: NNqt.question,));
+      globals.newQuestion = null;
     }
   }
 
@@ -57,7 +65,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(32))
         ),
       ),),
-      body: ListView(children: questions),
+      body: ListView(children: globals.questions),
       // add items to the to-do list
       floatingActionButton:Stack(
         children: [
@@ -68,7 +76,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   globals.sendNote();
                   setState(() {
                     /// add new page for creating question instead.
-                    questions.add(Question(cardNo: 0, question: "null", answers: [HiveAnswer(text: "Text", correct: false), HiveAnswer(text: "Text", correct: false), HiveAnswer(text: "Text", correct: false)],));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: HiveQuestion(question: "<question>", cardNo: 0, answers: [], attempted: 0, incorrect: 0),)));
                   });
                 },
                 tooltip: 'Add Item',
@@ -81,17 +89,8 @@ class _CreatePackState extends State<CreatePack>{//GetCards
 
                   List<HiveQuestion> Qst = [];
                   int cardNo = 0;
-                  HiveAnswer a1;
-                  HiveAnswer a2;
-                  HiveQuestion newQuestion;
-                  HiveAnswer a3;
-                  questions.forEach((question) => {
-                    a1 = HiveAnswer(text: question.ans1Cont.text,correct: question.a1corr),
-                    log(question.ans1Cont.text),
-                    a2 = HiveAnswer(text: question.ans2Cont.text,correct: question.a2corr),
-                    a3 = HiveAnswer(text: question.ans3Cont.text,correct: question.a3corr),
-                    newQuestion = HiveQuestion(cardNo: cardNo, question: question.qstCont.text, answers: [a1, a2, a3], attempted: 0, incorrect: 0),
-                    Qst.add(newQuestion),
+                  globals.questions.forEach((question) => {
+                    Qst.add(question.hiveQuestion),
                     cardNo += 1
                   });
 
@@ -195,31 +194,32 @@ class HiveQuestion extends HiveObject{
       {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.incorrect})
       : super();
   @HiveField(21)
-  final int cardNo;
+  int cardNo;///probs change this
   @HiveField(22)
-  final String question;
+  String question;
   @HiveField(23)
-  final List<HiveAnswer> answers;
+  List<HiveAnswer> answers;
   @HiveField(24)
-  final int attempted;
+  int attempted;
   @HiveField(25)
-  final int incorrect;
+  int incorrect;
 }
 
 @HiveType(typeId: 30)
 class HiveAnswer extends HiveObject{
   HiveAnswer({required this.text, required this.correct}) : super();
   @HiveField(31)
-  final String text;
+  String text;
   @HiveField(32)
-  final bool correct;
+  bool correct;
 }
 
 
 
 
 class Question extends StatefulWidget{
-  Question({required this.cardNo, required this.question, required this.answers}) : super();
+  Question({required this.cardNo, required this.question, required this.answers, required this.hiveQuestion}) : super();
+  final HiveQuestion hiveQuestion;
   final int cardNo;
   final String question;
   final List<HiveAnswer> answers;
@@ -233,16 +233,10 @@ class Question extends StatefulWidget{
 
 class _QuestionState extends State<Question>{
 
+
   @override
   void initState(){
     super.initState();
-    widget.qstCont.text = widget.question;
-    widget.ans1Cont.text = widget.answers[0].text;
-    widget.ans2Cont.text = widget.answers[1].text;
-    widget.ans3Cont.text = widget.answers[2].text;
-    widget.a1corr = widget.answers[0].correct;
-    widget.a2corr = widget.answers[1].correct;
-    widget.a3corr = widget.answers[2].correct;
   }
 
 
@@ -259,64 +253,46 @@ class _QuestionState extends State<Question>{
           children: [
             Align(
               alignment: FractionalOffset(0.05, 0.2),
-              child: Text(),///fill
+              child: Text(widget.question),
             ),
+
+
             Align(
               alignment: FractionalOffset(0.5, 0.2),
               child: Checkbox(
-                value: widget.a1corr,
-                onChanged: (bool? value){
-                  setState(() {
-                    if (value = true){
-                      widget.a1corr = true;
-                    }else{
-                      widget.a1corr = false;
-                    }
-                  });
-                },
+                value: widget.answers[0].correct,
+                onChanged: (bool? value){},
               ),
             ),
             Align(
               alignment: FractionalOffset(0.9, 0.2),
-              child: Text(),///fill
+              child: Text(widget.answers[0].text),
             ),
+
+
             Align(
               alignment: FractionalOffset(0.5, 0.5),
               child: Checkbox(
-                value: widget.a2corr,
-                onChanged: (bool? value){
-                  setState(() {
-                    if (value = true){
-                      widget.a2corr = true;
-                    }else{
-                      widget.a2corr = false;
-                    }
-                  });
-                },
+                value: widget.answers[1].correct,
+                onChanged: (bool? value){},
               ),
             ),
             Align(
               alignment: FractionalOffset(0.9, 0.5),
-              child: Text()///fill
+              child: Text(widget.answers[1].text)///fill
             ),
+
+
             Align(
               alignment: FractionalOffset(0.5, 0.8),
               child: Checkbox(
-                value: widget.a3corr,
-                onChanged: (bool? value){
-                  setState(() {
-                    if (value = true){
-                      widget.a3corr = true;
-                    }else{
-                      widget.a3corr = false;
-                    }
-                  });
-                },
-              ),
+                value: widget.answers[2].correct,
+                onChanged: (bool? value){}
+                ),
             ),
             Align(
               alignment: FractionalOffset(0.9, 0.8),
-              child: Text("")///fill
+              child: Text(widget.answers[2].text)
             ),
           ],
         ),

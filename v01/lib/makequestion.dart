@@ -4,18 +4,19 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:developer';
+import 'globals.dart' as globals;
 
 
 
 
 class MakeQuestion extends StatefulWidget{
   MakeQuestion({required this.question}):super();
-  final HiveQuestion question;
+  HiveQuestion question;
 
-  final TextEditingController qstCont = TextEditingController();
-  final TextEditingController ans1Cont = TextEditingController();
-  final TextEditingController ans2Cont = TextEditingController();
-  final TextEditingController ans3Cont = TextEditingController();
+  TextEditingController qstCont = TextEditingController();
+  TextEditingController ans1Cont = TextEditingController();
+  TextEditingController ans2Cont = TextEditingController();
+  TextEditingController ans3Cont = TextEditingController();
   bool a1corr = false;
   bool a2corr = false;
   bool a3corr = false;
@@ -31,6 +32,13 @@ class _MakeQuestionState extends State<MakeQuestion> {
   @override
   void initState(){
     super.initState();
+    widget.qstCont.text = widget.question.question;
+    widget.ans1Cont.text = widget.question.answers[0].text;
+    widget.ans2Cont.text = widget.question.answers[1].text;
+    widget.ans3Cont.text = widget.question.answers[2].text;
+    widget.a1corr = widget.question.answers[0].correct;
+    widget.a2corr = widget.question.answers[1].correct;
+    widget.a3corr = widget.question.answers[2].correct;
 
   }
 
@@ -110,10 +118,24 @@ class _MakeQuestionState extends State<MakeQuestion> {
       floatingActionButton: Stack(
         children: [
           FloatingActionButton(
-              onPressed: ///done
+              onPressed: (){
+                widget.question.question = widget.qstCont.text;
+                widget.question.answers[0].text = widget.ans1Cont.text;
+                widget.question.answers[1].text = widget.ans2Cont.text;
+                widget.question.answers[2].text = widget.ans3Cont.text;
+                widget.question.answers[0].correct = widget.a1corr;
+                widget.question.answers[1].correct = widget.a2corr;
+                widget.question.answers[2].correct = widget.a3corr;
+
+                globals.newQuestion = widget.question;
+
+                MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],)));
+              }
           ),
           FloatingActionButton(
-            onPressed: ///delete question,
+            onPressed: (){
+              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],)));
+            }
           )
         ],
       ),
