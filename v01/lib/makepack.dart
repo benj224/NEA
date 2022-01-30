@@ -20,7 +20,9 @@ List<String> titles = [];
 
 
 void setQuestions(HivePack? pack) async{
+  HivePack NNPK = pack!;
   if(!(pack == null)){
+    if(!(pack.questions.isEmpty))
     pack.questions.forEach((question) {
       Question newQst = Question(cardNo: question.cardNo, question: question.question, answers: question.answers, hiveQuestion: question,);
       globals.questions.add(newQst);
@@ -50,6 +52,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
       HiveQuestion NNqt = globals.newQuestion!;
       globals.questions.add(Question(cardNo: 0, hiveQuestion: NNqt, answers: NNqt.answers, question: NNqt.question,));
       globals.newQuestion = null;
+      log(globals.questions.length.toString());
     }
   }
 
@@ -76,7 +79,11 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                   globals.sendNote();
                   setState(() {
                     /// add new page for creating question instead.
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: HiveQuestion(question: "<question>", cardNo: 0, answers: [], attempted: 0, incorrect: 0),)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: HiveQuestion(question: "<question>", cardNo: 0, answers: [
+                      HiveAnswer(text: "<Ans1>", correct: false),
+                      HiveAnswer(text: "<Ans2>", correct: false),
+                      HiveAnswer(text: "<Ans3>", correct: false),
+                    ], attempted: 0, incorrect: 0),)));
                   });
                 },
                 tooltip: 'Add Item',
@@ -279,7 +286,7 @@ class _QuestionState extends State<Question>{
             ),
             Align(
               alignment: FractionalOffset(0.9, 0.5),
-              child: Text(widget.answers[1].text)///fill
+              child: Text(widget.answers[1].text)
             ),
 
 

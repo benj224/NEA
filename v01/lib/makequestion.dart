@@ -54,7 +54,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
         child: Stack(
           children: [
             Align(
-              alignment: FractionalOffset(0.4, 0.4),
+              alignment: FractionalOffset(0.5, 0.4),
               child: SizedBox(
                 height: 20,
                 width: MediaQuery.of(context).size.width * 0.425,
@@ -65,8 +65,20 @@ class _MakeQuestionState extends State<MakeQuestion> {
                 ),
               ),
             ),
+
             Align(
-              alignment: FractionalOffset(0.6, 0.4),
+              alignment: FractionalOffset(0.2, 0.5),
+              child: Checkbox(
+                value: widget.a1corr,
+                onChanged: (bool? value){
+                  setState(() {
+                    widget.a1corr = value!;
+                  });
+                },
+              ),
+            ),
+            Align(
+              alignment: FractionalOffset(0.6, 0.5),
               child: SizedBox(
                 height: 20,
                 width: MediaQuery.of(context).size.width * 0.425,
@@ -81,6 +93,18 @@ class _MakeQuestionState extends State<MakeQuestion> {
               ),
             ),
 
+
+            Align(
+              alignment: FractionalOffset(0.2, 0.6),
+              child: Checkbox(
+                value: widget.a2corr,
+                onChanged: (bool? value){
+                  setState(() {
+                    widget.a2corr = value!;
+                  });
+                },
+              ),
+            ),
             Align(
               alignment: FractionalOffset(0.6, 0.6),
               child: SizedBox(
@@ -97,8 +121,20 @@ class _MakeQuestionState extends State<MakeQuestion> {
               ),
             ),
 
+
             Align(
-              alignment: FractionalOffset(0.6, 0.8),
+              alignment: FractionalOffset(0.2, 0.7),
+              child: Checkbox(
+                  value: widget.a3corr,
+                  onChanged: (bool? value){
+                    setState(() {
+                      widget.a3corr = value!;
+                    });
+                  }
+              ),
+            ),
+            Align(
+              alignment: FractionalOffset(0.6, 0.7),
               child: SizedBox(
                 height: 20,
                 width: MediaQuery.of(context).size.width * 0.425,
@@ -117,25 +153,33 @@ class _MakeQuestionState extends State<MakeQuestion> {
       ),
       floatingActionButton: Stack(
         children: [
-          FloatingActionButton(
-              onPressed: (){
-                widget.question.question = widget.qstCont.text;
-                widget.question.answers[0].text = widget.ans1Cont.text;
-                widget.question.answers[1].text = widget.ans2Cont.text;
-                widget.question.answers[2].text = widget.ans3Cont.text;
-                widget.question.answers[0].correct = widget.a1corr;
-                widget.question.answers[1].correct = widget.a2corr;
-                widget.question.answers[2].correct = widget.a3corr;
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+                onPressed: (){
+                  widget.question.question = widget.qstCont.text;
+                  widget.question.answers[0].text = widget.ans1Cont.text;
+                  widget.question.answers[1].text = widget.ans2Cont.text;
+                  widget.question.answers[2].text = widget.ans3Cont.text;
+                  widget.question.answers[0].correct = widget.a1corr;
+                  widget.question.answers[1].correct = widget.a2corr;
+                  widget.question.answers[2].correct = widget.a3corr;
+                  log("question bool");
+                  log(widget.question.answers[0].correct.toString());
+                  log(widget.a1corr.toString());
 
-                globals.newQuestion = widget.question;
-
-                MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],)));
-              }
+                  globals.newQuestion = widget.question;
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
+                }
+            ),
           ),
-          FloatingActionButton(
-            onPressed: (){
-              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],)));
-            }
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: FloatingActionButton(
+                onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
+                }
+            ),
           )
         ],
       ),
