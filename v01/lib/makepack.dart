@@ -250,59 +250,67 @@ class _QuestionState extends State<Question>{
 
   @override
   Widget build(context){
-    return Material(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20)
-      ),
-      child: SizedBox(
-        height: 100,
-        child: Stack(
-          children: [
-            Align(
-              alignment: FractionalOffset(0.05, 0.2),
-              child: Text(widget.question),
-            ),
-
-
-            Align(
-              alignment: FractionalOffset(0.5, 0.2),
-              child: Checkbox(
-                value: widget.answers[0].correct,
-                onChanged: (bool? value){},
+    return GestureDetector(
+      onLongPress: () {
+        ///push to question creator with question
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: widget.hiveQuestion)));
+        ///delete question
+        globals.questions.remove(widget);
+      },
+      child: Material(
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: SizedBox(
+          height: 100,
+          child: Stack(
+            children: [
+              Align(
+                alignment: FractionalOffset(0.05, 0.2),
+                child: Text(widget.question),
               ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.9, 0.2),
-              child: Text(widget.answers[0].text),
-            ),
 
 
-            Align(
-              alignment: FractionalOffset(0.5, 0.5),
-              child: Checkbox(
-                value: widget.answers[1].correct,
-                onChanged: (bool? value){},
-              ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.9, 0.5),
-              child: Text(widget.answers[1].text)
-            ),
-
-
-            Align(
-              alignment: FractionalOffset(0.5, 0.8),
-              child: Checkbox(
-                value: widget.answers[2].correct,
-                onChanged: (bool? value){}
+              Align(
+                alignment: FractionalOffset(0.5, 0.2),
+                child: Checkbox(
+                  value: widget.answers[0].correct,
+                  onChanged: (bool? value){},
                 ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.9, 0.8),
-              child: Text(widget.answers[2].text)
-            ),
-          ],
+              ),
+              Align(
+                alignment: FractionalOffset(0.9, 0.2),
+                child: Text(widget.answers[0].text),
+              ),
+
+
+              Align(
+                alignment: FractionalOffset(0.5, 0.5),
+                child: Checkbox(
+                  value: widget.answers[1].correct,
+                  onChanged: (bool? value){},
+                ),
+              ),
+              Align(
+                  alignment: FractionalOffset(0.9, 0.5),
+                  child: Text(widget.answers[1].text)
+              ),
+
+
+              Align(
+                alignment: FractionalOffset(0.5, 0.8),
+                child: Checkbox(
+                    value: widget.answers[2].correct,
+                    onChanged: (bool? value){}
+                ),
+              ),
+              Align(
+                  alignment: FractionalOffset(0.9, 0.8),
+                  child: Text(widget.answers[2].text)
+              ),
+            ],
+          ),
         ),
       ),
     );
