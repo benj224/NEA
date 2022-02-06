@@ -137,16 +137,36 @@ class _MyHomePageState extends State<MyHomePage> {
         content: NotificationContent(
             id: 100,
             channelKey: "basic_channel",
-            title: "Huston! The eagle has landed!",
+            title: "Question",
             body: "A small step for a man, but a giant leap to Flutter's community!",
-            notificationLayout: NotificationLayout.BigPicture,
-            largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
-            bigPicture: "https://www.dw.com/image/49519617_303.jpg",
+            //notificationLayout: NotificationLayout.BigPicture,
+            //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
+            //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
             showWhen: true,
             payload: {
               "secret": "Awesome Notifications Rocks!"
             }
-        )
+        ),
+        actionButtons: [
+          NotificationActionButton(
+            key: "a1",
+            label: "answer 1",
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          ),
+          NotificationActionButton(
+            key: "a2",
+            label: "answer 2",
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          ),
+          NotificationActionButton(
+            key: "a3",
+            label: "answer 3",
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          )
+        ],
     );
   }
 
@@ -176,9 +196,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 class PackDisplay extends StatefulWidget{
-  PackDisplay({required this.name, required this.hivePack}) : super();
+  PackDisplay({required this.name, required this.hivePack, required this.enabled}) : super();
   final String name;
   final HivePack hivePack;
+  bool enabled;
 
   @override
   _PackDisplayState createState() => _PackDisplayState();
@@ -186,48 +207,63 @@ class PackDisplay extends StatefulWidget{
 
 class _PackDisplayState extends State<PackDisplay>{
 
+  MaterialColor isEnabled(){
+    if(widget.enabled){
+      return Colors.red;
+    }else{
+      return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context){
-    return Material(
-      elevation: 5,
-      color: Colors.red,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20)
-      ),
-      child: SizedBox(
-        width: 100,
-        child: Stack(
-          children: [
-            Align(
-              alignment: FractionalOffset(0.5, 0.1),
-              child: Text(widget.name),
-            ),
-            Align(
-              alignment: FractionalOffset(0.5, 0.3),
-              child: CircularProgressIndicator(
-                strokeWidth: 6.0,
-                value: 0.5/*widget.progress*/,
+    return GestureDetector(
+      onLongPress: (){
+        setState(() {
+          widget.enabled = !(widget.enabled);
+        });
+      },
+      child: Material(
+        elevation: 5,
+        color: isEnabled(),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+        ),
+        child: SizedBox(
+          width: 100,
+          child: Stack(
+            children: [
+              Align(
+                alignment: FractionalOffset(0.5, 0.1),
+                child: Text(widget.name),
               ),
-            ),
-            Align(
-              alignment: FractionalOffset(0.5, 0.32),
-              child: Text("Text"),
-            ),
-            Align(
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.create_rounded),
-                    onPressed: () async{
-                      Box box = await Hive.openBox("Globals");
-                      await box.put("editbox", widget.hivePack);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
-                    },
-                  ),
-                ],
+              Align(
+                alignment: FractionalOffset(0.5, 0.3),
+                child: CircularProgressIndicator(
+                  strokeWidth: 6.0,
+                  value: 0.5/*widget.progress*/,
+                ),
               ),
-            ),
-          ],
+              Align(
+                alignment: FractionalOffset(0.5, 0.32),
+                child: Text("Text"),
+              ),
+              Align(
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.create_rounded),
+                      onPressed: () async{
+                        Box box = await Hive.openBox("Globals");
+                        await box.put("editbox", widget.hivePack);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -326,7 +362,7 @@ Future<ListView> loadPacks() async{
 
 
     packs.forEach((pack) {
-      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack);
+      PackDisplay pck = PackDisplay(name: pack.title, hivePack: pack, enabled: true,);
       displayPacks.add(pck);
     });
 
