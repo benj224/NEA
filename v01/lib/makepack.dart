@@ -199,7 +199,7 @@ class HivePack extends HiveObject{
 @HiveType(typeId: 20)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
-      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.incorrect})
+      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct})
       : super();
   @HiveField(21)
   int cardNo;///probs change this
@@ -210,7 +210,9 @@ class HiveQuestion extends HiveObject{
   @HiveField(24)
   int attempted;
   @HiveField(25)
-  int incorrect;
+  int correct;
+  @HiveField(26)
+  List<int> pastAnswers;
 }
 
 @HiveType(typeId: 30)
@@ -230,6 +232,7 @@ class Question extends StatefulWidget{
   final HiveQuestion hiveQuestion;
   final int cardNo;
   final String question;
+  List<int> pastAnswers = [0,0,0,0,0,0];
   final List<HiveAnswer> answers;
 
 
@@ -240,7 +243,16 @@ class Question extends StatefulWidget{
 }
 
 class _QuestionState extends State<Question>{
+  MaterialColor confidence(){
+    int noCorrect = 0;
+    widget.pastAnswers.forEach((element) {
+      noCorrect += 1;
+    });
 
+    if///
+
+    return
+  }
 
   @override
   void initState(){
@@ -258,6 +270,7 @@ class _QuestionState extends State<Question>{
         globals.questions.remove(widget);
       },
       child: Material(
+        color: ,
         elevation: 5,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)
