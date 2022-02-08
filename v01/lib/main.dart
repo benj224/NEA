@@ -47,8 +47,7 @@ class MyApp extends StatelessWidget{
 
     AwesomeNotifications().actionStream.listen(
             (ReceivedNotification receivedNotification){
-              log("event recieved");
-              log(receivedNotification.id.toString());
+              log(receivedNotification.groupKey.toString());
         }
     );
 
@@ -143,9 +142,6 @@ class _MyHomePageState extends State<MyHomePage> {
             //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
             //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
             showWhen: true,
-            payload: {
-              "secret": "Awesome Notifications Rocks!"
-            }
         ),
         actionButtons: [
           NotificationActionButton(

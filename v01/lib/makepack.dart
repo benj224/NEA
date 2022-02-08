@@ -84,7 +84,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                       HiveAnswer(text: "<Ans1>", correct: false),
                       HiveAnswer(text: "<Ans2>", correct: false),
                       HiveAnswer(text: "<Ans3>", correct: false),
-                    ], attempted: 0, incorrect: 0),)));
+                    ], attempted: 0, correct: 0, pastAnswers: [0,0,0,0,0,0]),)));
                   });
                 },
                 tooltip: 'Add Item',
@@ -199,7 +199,7 @@ class HivePack extends HiveObject{
 @HiveType(typeId: 20)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
-      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct})
+      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct, required this.pastAnswers})
       : super();
   @HiveField(21)
   int cardNo;///probs change this
@@ -249,9 +249,13 @@ class _QuestionState extends State<Question>{
       noCorrect += 1;
     });
 
-    if///
+    if(noCorrect <= 4){
+      return Colors.red;
+    }if(noCorrect <= 2){
+      return Colors.orange;
+    }
 
-    return
+    return Colors.green;
   }
 
   @override
@@ -270,7 +274,7 @@ class _QuestionState extends State<Question>{
         globals.questions.remove(widget);
       },
       child: Material(
-        color: ,
+        color: confidence(),
         elevation: 5,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)
