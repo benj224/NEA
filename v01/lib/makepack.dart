@@ -141,6 +141,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     log("title not null in makepack");
                     log(_titleList.length.toString());
                   }
+                  globals.questions = [];
                   Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
                 },
                 tooltip: 'Done',

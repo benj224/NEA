@@ -10,6 +10,7 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'globals.dart' as globals;
 
 void main() async{
+
   //initialize Awesome Notifications
   AwesomeNotifications().initialize(
     // set the icon to null if you want to use the default app icon
@@ -39,15 +40,17 @@ void main() async{
 
 
 
+
+
+
 class MyApp extends StatelessWidget{
 
 
   @override
   Widget build(BuildContext context){
 
-    AwesomeNotifications().actionStream.listen(
-            (ReceivedNotification receivedNotification){
-              log(receivedNotification.groupKey.toString());
+    AwesomeNotifications().actionStream.listen((event){
+              log(event.buttonKeyInput);///make this work
         }
     );
 
@@ -129,13 +132,14 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     if(!_notificationsAllowed){
+      log("notifications not allowed");
       return;
     }
-
+    log("sending notification.");
     AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: 100,
-            channelKey: "basic_channel",
+            channelKey: "awesome_notifications",
             title: "Question",
             body: "A small step for a man, but a giant leap to Flutter's community!",
             //notificationLayout: NotificationLayout.BigPicture,
