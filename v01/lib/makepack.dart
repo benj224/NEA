@@ -7,6 +7,7 @@ import 'package:udemy1/main.dart';
 import 'package:udemy1/makequestion.dart';
 import 'dart:developer';
 import 'globals.dart' as globals;
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 ///fix notification call
 
@@ -195,6 +196,7 @@ class HivePack extends HiveObject{
   @HiveField(12)
   final List<HiveQuestion> questions;
 
+
 }
 
 @HiveType(typeId: 20)
@@ -214,6 +216,8 @@ class HiveQuestion extends HiveObject{
   int correct;
   @HiveField(26)
   List<int> pastAnswers;
+  @HiveField(27)
+  final HivePack hivePack;
 }
 
 @HiveType(typeId: 30)
@@ -257,6 +261,46 @@ class _QuestionState extends State<Question>{
     }
 
     return Colors.green;
+  }
+
+
+  void schedule(){
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 100,
+        channelKey: "awesome_notifications",
+        title: "Question:",
+        body: widget.question,
+        //notificationLayout: NotificationLayout.BigPicture,
+        //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
+        //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
+        showWhen: true,
+        payload: {
+          "packname":widget.hiveQuestion.hivePack.title,
+          "question":widget.question
+        }
+      ),
+      actionButtons: [
+        NotificationActionButton(
+          key: "a1",
+          label: widget.answers[0].text,
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        ),
+        NotificationActionButton(
+          key: "a2",
+          label: widget.answers[1].text,
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        ),
+        NotificationActionButton(
+          key: "a3",
+          label: widget.answers[2].text,
+          enabled: true,
+          buttonType: ActionButtonType.Default,
+        )
+      ],
+    );
   }
 
   @override

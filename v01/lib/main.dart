@@ -51,6 +51,10 @@ class MyApp extends StatelessWidget{
 
     AwesomeNotifications().actionStream.listen((event){
               log(event.buttonKeyInput);///make this work
+
+
+
+      if(event.buttonKeyInput == "a1"){}
         }
     );
 
@@ -140,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
         content: NotificationContent(
             id: 100,
             channelKey: "awesome_notifications",
-            title: "Question",
+            title: "Question:",
             body: "A small step for a man, but a giant leap to Flutter's community!",
             //notificationLayout: NotificationLayout.BigPicture,
             //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
