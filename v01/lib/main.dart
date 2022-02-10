@@ -45,18 +45,39 @@ void main() async{
 
 class MyApp extends StatelessWidget{
 
+  List<int> correct(List<int> past){
+    ///for loop
+  }
+
+  void notificationStream() async{
+    Box box = await Hive.openBox("Globals");
+    List<dynamic> pcks = box.get("packs");
+
+    AwesomeNotifications().actionStream.listen((event){
+      log(event.buttonKeyInput);///make this work
+
+      if(event.buttonKeyInput == "a1"){
+
+      }
+    }
+    );
+
+    List<HivePack> hivePacks = pcks.cast<HivePack>();
+    hivePacks.forEach((element) {
+
+    });
+  }
+
+
+  @override
+  void initState(){
+    notificationStream();
+  }
 
   @override
   Widget build(BuildContext context){
 
-    AwesomeNotifications().actionStream.listen((event){
-              log(event.buttonKeyInput);///make this work
 
-
-
-      if(event.buttonKeyInput == "a1"){}
-        }
-    );
 
     return MaterialApp(
       title: "Flutter App",
