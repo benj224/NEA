@@ -46,26 +46,58 @@ void main() async{
 class MyApp extends StatelessWidget{
 
   List<int> correct(List<int> past){
+    for( var i = 1; i >= 5; i ++){
+      past[i-1] = past[i];
+    }
+    past[5] = 1;
+
+    return past;
     ///for loop
+  }
+
+  List<int> incorrect(List<int> past){
+    for( var i = 1; i >= 5; i ++){
+      past[i-1] = past[i];
+    }
+    past[5] = 0;
+
+    return past;
   }
 
   void notificationStream() async{
     Box box = await Hive.openBox("Globals");
     List<dynamic> pcks = box.get("packs");
 
+    late HivePack relevantPack;
+    late HiveQuestion relevantQuestion;
+
     AwesomeNotifications().actionStream.listen((event){
+
+
+      List<HivePack> hivePacks = pcks.cast<HivePack>();
+      hivePacks.forEach((element) {
+        if(element.title == event.payload!["packname"]){
+          relevantPack = element;
+        }
+      });
+
+      List<HiveQuestion> hiveQuestions = [];
+      relevantPack.questions.forEach((element) {
+        if(element.question == event.payload!["question"])
+          relevantQuestion = element;
+      });
+
       log(event.buttonKeyInput);///make this work
 
       if(event.buttonKeyInput == "a1"){
-
+        if relevantQuestion.///finish
       }
+
+
     }
     );
 
-    List<HivePack> hivePacks = pcks.cast<HivePack>();
-    hivePacks.forEach((element) {
 
-    });
   }
 
 
