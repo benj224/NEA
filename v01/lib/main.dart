@@ -9,6 +9,12 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'globals.dart' as globals;
 
+
+///use a chron to schedule next days notifications every day at midnight
+///run only on first run
+///maby look at animated instuctions?
+///add statistics to questions and packs
+
 void main() async{
 
   //initialize Awesome Notifications
@@ -90,7 +96,27 @@ class MyApp extends StatelessWidget{
       log(event.buttonKeyInput);///make this work
 
       if(event.buttonKeyInput == "a1"){
-        if relevantQuestion.///finish
+        if (relevantQuestion.answers[0].correct){
+          relevantQuestion.pastAnswers = correct(relevantQuestion.pastAnswers);
+          relevantQuestion.attempted += 1;
+          relevantQuestion.correct += 1;
+        }
+      }if(event.buttonKeyInput == "a2"){
+        if (relevantQuestion.answers[1].correct){
+          relevantQuestion.pastAnswers = correct(relevantQuestion.pastAnswers);
+          relevantQuestion.attempted += 1;
+          relevantQuestion.correct += 1;
+        }
+      }if(event.buttonKeyInput == "a3"){
+        if (relevantQuestion.answers[2].correct){
+          relevantQuestion.pastAnswers = correct(relevantQuestion.pastAnswers);
+          relevantQuestion.attempted += 1;
+          relevantQuestion.correct += 1;
+        }
+      }else{
+        relevantQuestion.pastAnswers = incorrect(relevantQuestion.pastAnswers);
+        relevantQuestion.attempted += 1;
+        log("incorrect");
       }
 
 

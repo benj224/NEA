@@ -85,7 +85,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                       HiveAnswer(text: "<Ans1>", correct: false),
                       HiveAnswer(text: "<Ans2>", correct: false),
                       HiveAnswer(text: "<Ans3>", correct: false),
-                    ], attempted: 0, correct: 0, pastAnswers: [0,0,0,0,0,0]),)));
+                    ], attempted: 0, correct: 0, pastAnswers: [0,0,0,0,0,0], hivePack: widget.pack),)));
                   });
                 },
                 tooltip: 'Add Item',
@@ -143,6 +143,8 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     log(_titleList.length.toString());
                   }
                   globals.questions = [];
+
+                  ///schedule questions
                   Navigator.push(context, MaterialPageRoute(builder: (context) => MyHomePage()));
                 },
                 tooltip: 'Done',
@@ -202,7 +204,7 @@ class HivePack extends HiveObject{
 @HiveType(typeId: 20)
 class HiveQuestion extends HiveObject{
   HiveQuestion(
-      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct, required this.pastAnswers})
+      {required this.cardNo, required this.question, required this.answers, required this.attempted, required this.correct, required this.pastAnswers, required this.hivePack})
       : super();
   @HiveField(21)
   int cardNo;///probs change this
