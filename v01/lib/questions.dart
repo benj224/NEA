@@ -10,9 +10,10 @@ import 'globals.dart' as globals;
 ///change compilesdkversion and target sdk version to 31
 
 
-void setQuestions(){
+void setQuestions() async{
   ///add stats to each question to calculate frequency and methods of asking.
-  ///set up x length repeating schedule which is then deleted every time packs change and run this function again
+  ///probs create one long list for each pack and add multiple times to increase probability
+  ///random time between set hours and independent for each pack.
 }
 
 

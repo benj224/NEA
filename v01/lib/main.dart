@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/widgets.dart';
 import 'dart:developer';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import "package:cron/cron.dart";
 
 import 'globals.dart' as globals;
 
@@ -16,6 +17,12 @@ import 'globals.dart' as globals;
 ///add statistics to questions and packs
 
 void main() async{
+
+  var cron = new Cron();
+  cron.schedule(new Schedule.parse("* 1 * * *"), () async {
+
+  });
+  
 
   //initialize Awesome Notifications
   AwesomeNotifications().initialize(
@@ -270,10 +277,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
+              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true))));
         },
       ),
-    );
   }
 }
 
@@ -304,6 +310,7 @@ class _PackDisplayState extends State<PackDisplay>{
       onLongPress: (){
         setState(() {
           widget.enabled = !(widget.enabled);
+          widget.hivePack.enabled = !(widget.hivePack.enabled);
         });
       },
       child: Material(

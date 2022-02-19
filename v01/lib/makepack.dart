@@ -103,7 +103,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     cardNo += 1
                   });
 
-                  HivePack pck = HivePack(title: titleController.text, questions: Qst);
+                  HivePack pck = HivePack(title: titleController.text, questions: Qst, enabled: true);
                   Box box = await Hive.openBox("Globals");
                   if(!(box.get("editbox") == null)){
                     List<dynamic> pcks = box.get("packs");
@@ -192,11 +192,14 @@ class _CreatePackState extends State<CreatePack>{//GetCards
 
 @HiveType(typeId: 10)
 class HivePack extends HiveObject{
-  HivePack({required this.title, required this.questions}) : super();
+  HivePack({required this.title, required this.questions, required this.enabled}) : super();
   @HiveField(11)
   final String title;
   @HiveField(12)
   final List<HiveQuestion> questions;
+  @HiveField(13)
+  bool enabled;
+
 
 
 }
