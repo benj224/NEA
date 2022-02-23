@@ -78,7 +78,6 @@ class _CreatePackState extends State<CreatePack>{//GetCards
             alignment: Alignment.bottomRight,
             child: FloatingActionButton(
                 onPressed: (){
-                  globals.sendNote();
                   setState(() {
                     /// add new page for creating question instead.
                     Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: HiveQuestion(question: "<question>", cardNo: 0, answers: [
@@ -103,7 +102,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     cardNo += 1
                   });
 
-                  HivePack pck = HivePack(title: titleController.text, questions: Qst, enabled: true);
+                  HivePack pck = HivePack(title: titleController.text, questions: Qst, enabled: true, frequency: 2);
                   Box box = await Hive.openBox("Globals");
                   if(!(box.get("editbox") == null)){
                     List<dynamic> pcks = box.get("packs");
@@ -192,13 +191,15 @@ class _CreatePackState extends State<CreatePack>{//GetCards
 
 @HiveType(typeId: 10)
 class HivePack extends HiveObject{
-  HivePack({required this.title, required this.questions, required this.enabled}) : super();
+  HivePack({required this.title, required this.questions, required this.enabled, required this.frequency}) : super();
   @HiveField(11)
   final String title;
   @HiveField(12)
   final List<HiveQuestion> questions;
   @HiveField(13)
   bool enabled;
+  @HiveField(14)
+  int frequency;
 
 
 

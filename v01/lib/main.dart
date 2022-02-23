@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import "package:flutter/material.dart";
 import 'makepack.dart';
 import 'package:hive/hive.dart';
@@ -18,9 +20,92 @@ import 'globals.dart' as globals;
 
 void main() async{
 
+  bool _notificationsAllowed = false;
+
+  void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3) async {
+
+    if(!globals.notificationsAllowed){
+      await globals.requestUserPermission();
+    }
+
+    if(!globals.notificationsAllowed){
+      return;
+    }
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 100,
+          channelKey: "awesome_notifications",
+          title: question,
+          body: "test",
+          //notificationLayout: NotificationLayout.BigPicture,
+          //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
+          //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
+          showWhen: true,
+        ),
+        actionButtons: [
+          NotificationActionButton(
+            key: "a1",
+            label: ans1,
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          ),
+          NotificationActionButton(
+            key: "a2",
+            label: ans2,
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          ),
+          NotificationActionButton(
+            key: "a3",
+            label: ans3,
+            enabled: true,
+            buttonType: ActionButtonType.Default,
+          )
+        ],
+        schedule: NotificationCalendar.fromDate(date: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hour, minute))
+    );
+  }
+
+  void scheduleQuestions() async{
+    var rng = Random();
+    Box box = await Hive.openBox("Globals");
+    List<dynamic> pcks = box.get("packs");
+    List<HivePack> _packList = pcks.cast<HivePack>();
+    _packList.forEach((pack) {
+      List<HiveQuestion> qstList = [];
+      pack.questions.forEach((question) {
+        int score = 0;
+        for(int i = 0; i > 6; i++){
+          score += question.pastAnswers[i] * 6;
+        }
+        for(int n = 0; n > score; n++){
+          qstList.add(question);
+        }
+      });
+      double hourIndex = 14/pack.frequency;
+      for(int x = 0; x > pack.frequency; x++){
+        HiveQuestion qst = qstList.removeAt(rng.nextInt(qstList.length));
+
+        double lower = 60 * 7 + hourIndex * x * 60;
+        double upper = 60 * 7 + hourIndex * (x + 1) * 60;
+        int diff = rng.nextInt((upper-lower).toInt());
+        int minutes = diff + lower.toInt();
+        double time = minutes/60;
+        int hours = time.toInt();
+        int mins = 0;
+        int? min = int.tryParse(time.toString().split(".")[1]);
+        if(min is int){
+          int? minn = int.tryParse(min.toString().substring(0, 2));
+          mins = minn!;
+        }
+        sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
+      }
+    });
+  }
+
   var cron = new Cron();
   cron.schedule(new Schedule.parse("* 1 * * *"), () async {
-
+    scheduleQuestions();
   });
   
 
@@ -47,6 +132,7 @@ void main() async{
 
 
 
+
   runApp(MyApp());
 }
 
@@ -57,6 +143,7 @@ void main() async{
 
 
 class MyApp extends StatelessWidget{
+
 
   List<int> correct(List<int> past){
     for( var i = 1; i >= 5; i ++){
@@ -100,7 +187,6 @@ class MyApp extends StatelessWidget{
           relevantQuestion = element;
       });
 
-      log(event.buttonKeyInput);///make this work
 
       if(event.buttonKeyInput == "a1"){
         if (relevantQuestion.answers[0].correct){
@@ -123,7 +209,6 @@ class MyApp extends StatelessWidget{
       }else{
         relevantQuestion.pastAnswers = incorrect(relevantQuestion.pastAnswers);
         relevantQuestion.attempted += 1;
-        log("incorrect");
       }
 
 
@@ -133,10 +218,15 @@ class MyApp extends StatelessWidget{
 
   }
 
-
   @override
   void initState(){
     notificationStream();
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      globals.notificationsAllowed = isAllowed;
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
   }
 
   @override
@@ -162,30 +252,6 @@ class MyHomePage extends StatefulWidget{
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  bool _notificationsAllowed = false;
-
-  var _result;
-
-  @override
-  void initState() {
-    //check permissions for notification access
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      _notificationsAllowed = isAllowed;
-      if (!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
-
-    globals.sendNote = sendNotification;
-
-    loadPacks().then((result) {
-      setState(() {
-        _result = result;
-      });
-
-    });
-  }
-
   Future<void> requestUserPermission() async {
     showDialog(
         context: context,
@@ -198,9 +264,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () async {
                       Navigator.pop(context, "Cancel");
                       await AwesomeNotifications().requestPermissionToSendNotifications();
-                      _notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
+                      globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
                       setState(() {
-                        _notificationsAllowed = _notificationsAllowed;
+                        globals.notificationsAllowed = globals.notificationsAllowed;
                       });
                     },
                     child: Text("Cancel")
@@ -215,49 +281,19 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void sendNotification() async {
+  var _result;
 
-    if(!_notificationsAllowed){
-      await requestUserPermission();
-    }
+  @override
+  void initState() {
+    //check permissions for notification access
+    globals.requestUserPermission = requestUserPermission;
 
-    if(!_notificationsAllowed){
-      log("notifications not allowed");
-      return;
-    }
-    log("sending notification.");
-    AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: 100,
-            channelKey: "awesome_notifications",
-            title: "Question:",
-            body: "A small step for a man, but a giant leap to Flutter's community!",
-            //notificationLayout: NotificationLayout.BigPicture,
-            //largeIcon: "https://avidabloga.files.wordpress.com/2012/08/emmemc3b3riadeneilarmstrong3.jpg",
-            //bigPicture: "https://www.dw.com/image/49519617_303.jpg",
-            showWhen: true,
-        ),
-        actionButtons: [
-          NotificationActionButton(
-            key: "a1",
-            label: "answer 1",
-            enabled: true,
-            buttonType: ActionButtonType.Default,
-          ),
-          NotificationActionButton(
-            key: "a2",
-            label: "answer 2",
-            enabled: true,
-            buttonType: ActionButtonType.Default,
-          ),
-          NotificationActionButton(
-            key: "a3",
-            label: "answer 3",
-            enabled: true,
-            buttonType: ActionButtonType.Default,
-          )
-        ],
-    );
+    loadPacks().then((result) {
+      setState(() {
+        _result = result;
+      });
+
+    });
   }
 
 
@@ -277,9 +313,10 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true))));
+              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
         },
       ),
+    );
   }
 }
 
@@ -409,7 +446,6 @@ Future<ListView> loadPacks() async{
   Box box = await Hive.openBox("Globals");
 
   if(box.get("titles") == null){
-    log("titles were null when loading");
     return ListView(
       scrollDirection: Axis.vertical,
       children: [
@@ -456,8 +492,6 @@ Future<ListView> loadPacks() async{
       displayPacks.add(pck);
     });
 
-    log("length of widgets when returning listview");
-    log(displayPacks.length.toString());
     return ListView(
       scrollDirection: Axis.vertical,
       children: displayPacks,

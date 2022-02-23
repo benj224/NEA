@@ -169,7 +169,9 @@ class _MakeQuestionState extends State<MakeQuestion> {
                   log(widget.a1corr.toString());
 
                   globals.newQuestion = widget.question;
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
+
+                  globals.sendNote();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
                 }
             ),
           ),
@@ -177,7 +179,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
             alignment: Alignment.bottomLeft,
             child: FloatingActionButton(
                 onPressed: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [],))));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
                 }
             ),
           )
