@@ -170,7 +170,7 @@ class _MakeQuestionState extends State<MakeQuestion> {
 
                   globals.newQuestion = widget.question;
 
-                  globals.sendNote();
+                  globals.sendNote(DateTime.now().hour, DateTime.now().minute + 1, "test question", "test a1", "test a2", "test a3");
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
                 }
             ),

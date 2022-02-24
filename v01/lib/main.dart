@@ -17,6 +17,8 @@ import 'globals.dart' as globals;
 ///run only on first run
 ///maby look at animated instuctions?
 ///add statistics to questions and packs
+///
+///notification access not setting true
 
 void main() async{
 
@@ -66,6 +68,8 @@ void main() async{
     );
   }
 
+  globals.sendNote = sendNotification;
+
   void scheduleQuestions() async{
     var rng = Random();
     Box box = await Hive.openBox("Globals");
@@ -104,7 +108,7 @@ void main() async{
   }
 
   var cron = new Cron();
-  cron.schedule(new Schedule.parse("* 1 * * *"), () async {
+  cron.schedule(Schedule.parse("* 1 * * *"), () async {
     scheduleQuestions();
   });
   
@@ -286,6 +290,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     //check permissions for notification access
+    requestUserPermission();
     globals.requestUserPermission = requestUserPermission;
 
     loadPacks().then((result) {
