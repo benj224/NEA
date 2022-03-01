@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:flutter/services.dart';
 import 'makepack.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -164,14 +165,12 @@ class _MakeQuestionState extends State<MakeQuestion> {
                   widget.question.answers[0].correct = widget.a1corr;
                   widget.question.answers[1].correct = widget.a2corr;
                   widget.question.answers[2].correct = widget.a3corr;
-                  log("question bool");
-                  log(widget.question.answers[0].correct.toString());
-                  log(widget.a1corr.toString());
 
                   globals.newQuestion = widget.question;
 
                   globals.sendNote(DateTime.now().hour, DateTime.now().minute + 1, "test question", "test a1", "test a2", "test a3");
                   Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
+                  HapticFeedback.mediumImpact();
                 }
             ),
           ),

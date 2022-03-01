@@ -31,7 +31,7 @@ void main() async{
     }
 
     if(!globals.notificationsAllowed){
-      return;
+      return;/// this is executing why
     }
     AwesomeNotifications().createNotification(
         content: NotificationContent(
@@ -270,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       await AwesomeNotifications().requestPermissionToSendNotifications();
                       globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
                       setState(() {
-                        globals.notificationsAllowed = globals.notificationsAllowed;
+                        globals.notificationsAllowed = !globals.notificationsAllowed;
                       });
                     },
                     child: Text("Cancel")
@@ -455,7 +455,7 @@ Future<ListView> loadPacks() async{
       scrollDirection: Axis.vertical,
       children: [
         SizedBox(
-          height: 100,
+          height: 200,
           child: Material(
             elevation: 5,
             color: Colors.red,
