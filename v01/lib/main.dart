@@ -6,7 +6,7 @@ import 'makepack.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter/widgets.dart';
-import 'dart:developer';
+import 'dart:developer' as dev;
 import 'package:awesome_notifications/awesome_notifications.dart';
 import "package:cron/cron.dart";
 
@@ -22,7 +22,22 @@ import 'globals.dart' as globals;
 
 void main() async{
 
-  bool _notificationsAllowed = false;
+  bool done = await AwesomeNotifications().initialize(
+    // set the icon to null if you want to use the default app icon
+    null,
+    [
+      NotificationChannel(
+          channelKey: 'awesome_notifications',
+          channelName: 'Basic notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: Color(0xFF9D50DD),
+          ledColor: Colors.white)
+    ],
+    debug: true
+  );///fukkkkkkkkkk
+
+  dev.log(done.toString());
+
 
   void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3) async {
 
@@ -33,7 +48,7 @@ void main() async{
     if(!globals.notificationsAllowed){
       return;/// this is executing why
     }
-    AwesomeNotifications().createNotification(
+    await AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 100,
           channelKey: "awesome_notifications",
@@ -114,18 +129,7 @@ void main() async{
   
 
   //initialize Awesome Notifications
-  AwesomeNotifications().initialize(
-    // set the icon to null if you want to use the default app icon
-    null,
-      [
-        NotificationChannel(
-            channelKey: 'awesome_notifications',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            defaultColor: Color(0xFF9D50DD),
-            ledColor: Colors.white)
-      ],
-  );
+
 
 
 
@@ -136,7 +140,7 @@ void main() async{
 
 
 
-
+  dev.log("done");
   runApp(MyApp());
 }
 
@@ -346,6 +350,17 @@ class _PackDisplayState extends State<PackDisplay>{
     }
   }
 
+  List questionsAttempted(){
+    int qst = 0;
+    int correct = 0;
+    widget.hivePack.questions.forEach((element) {
+      qst += element.attempted;
+      correct += element.correct;
+    });
+
+    return [qst, correct];
+  }
+
   @override
   Widget build(BuildContext context){
     return GestureDetector(
@@ -362,7 +377,7 @@ class _PackDisplayState extends State<PackDisplay>{
             borderRadius: BorderRadius.circular(20)
         ),
         child: SizedBox(
-          width: 100,
+          width: 200,
           child: Stack(
             children: [
               Align(
@@ -378,7 +393,15 @@ class _PackDisplayState extends State<PackDisplay>{
               ),
               Align(
                 alignment: FractionalOffset(0.5, 0.32),
-                child: Text("Text"),
+                child: Text("Questions: " + widget.hivePack.questions.length.toString()),
+              ),
+              Align(
+                alignment: FractionalOffset(0.5, 0.32),
+                child: Text("Attempted: " + questionsAttempted()[0]),
+              ),
+              Align(
+                alignment: FractionalOffset(0.5, 0.32),
+                child: Text("Questions: " + questionsAttempted()[1]),
               ),
               Align(
                 child: Row(
