@@ -40,12 +40,14 @@ void main() async{
 
 
   void sendNotification(int hour, int minute, String question, String ans1, String ans2, String ans3) async {
+    dev.log("is executing");
 
     if(!globals.notificationsAllowed){
       await globals.requestUserPermission();
     }
 
     if(!globals.notificationsAllowed){
+      dev.log("was false");
       return;/// this is executing why
     }
     await AwesomeNotifications().createNotification(
@@ -273,15 +275,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.pop(context, "Cancel");
                       await AwesomeNotifications().requestPermissionToSendNotifications();
                       globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
-                      setState(() {
-                        globals.notificationsAllowed = !globals.notificationsAllowed;
-                      });
+                      dev.log(globals.notificationsAllowed.toString());
+                      dev.log("whaka;sdkjf");
                     },
-                    child: Text("Cancel")
+                    child: Text("OK")
                 ),
                 TextButton(
                     onPressed: () => Navigator.pop(context, "OK"),
-                    child: Text("OK")
+                    child: Text("Cancel")
                 )
               ],
             )
@@ -319,12 +320,29 @@ class _MyHomePageState extends State<MyHomePage> {
             child: _result,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
-        },
-      ),
+      floatingActionButton: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CreatePack(pack: HivePack(title: "<NewPack>",  questions: [], enabled: true, frequency: 2))));
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: FloatingActionButton(
+              onPressed: () {
+                globals.requestUserPermission();
+              },
+            ),
+          )
+        ],
+      )
+
+
     );
   }
 }
@@ -397,11 +415,11 @@ class _PackDisplayState extends State<PackDisplay>{
               ),
               Align(
                 alignment: FractionalOffset(0.5, 0.32),
-                child: Text("Attempted: " + questionsAttempted()[0]),
+                child: Text("Attempted: " + questionsAttempted()[0].toString()),
               ),
               Align(
                 alignment: FractionalOffset(0.5, 0.32),
-                child: Text("Questions: " + questionsAttempted()[1]),
+                child: Text("Questions: " + questionsAttempted()[1].toString()),
               ),
               Align(
                 child: Row(
