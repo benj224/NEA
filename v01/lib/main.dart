@@ -85,6 +85,7 @@ void main() async{
     );
   }
 
+
   globals.sendNote = sendNotification;
 
   void scheduleQuestions() async{
@@ -272,16 +273,14 @@ class _MyHomePageState extends State<MyHomePage> {
               actions: <Widget>[
                 TextButton(
                     onPressed: () async {
-                      Navigator.pop(context, "Cancel");
+                      Navigator.pop(context, "Ok");
                       await AwesomeNotifications().requestPermissionToSendNotifications();
                       globals.notificationsAllowed = await AwesomeNotifications().isNotificationAllowed();
-                      dev.log(globals.notificationsAllowed.toString());
-                      dev.log("whaka;sdkjf");
                     },
                     child: Text("OK")
                 ),
                 TextButton(
-                    onPressed: () => Navigator.pop(context, "OK"),
+                    onPressed: () => Navigator.pop(context, "Cancel"),
                     child: Text("Cancel")
                 )
               ],
@@ -331,14 +330,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: FloatingActionButton(
-              onPressed: () {
-                globals.requestUserPermission();
-              },
-            ),
-          )
         ],
       )
 
@@ -395,7 +386,7 @@ class _PackDisplayState extends State<PackDisplay>{
             borderRadius: BorderRadius.circular(20)
         ),
         child: SizedBox(
-          width: 200,
+          height: 100,
           child: Stack(
             children: [
               Align(
