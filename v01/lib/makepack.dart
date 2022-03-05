@@ -138,8 +138,6 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     _titleList.add(titleController.text);
                     box.delete("titles");
                     await box.put("titles", _titleList);
-                    log("title not null in makepack");
-                    log(_titleList.length.toString());
                   }
                   globals.questions = [];
 
@@ -166,9 +164,6 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                     newPcks.add(pack);
                     newTitles.add(pack.title);
                     //newDisplayPacks.add(PackDisplay(name: pack.title, hivePack: pack));
-                  }else{
-                    log("pack deleted");
-                    log(pack.title);
                   }
                 });
                 box.delete("packs");
@@ -245,6 +240,8 @@ class Question extends StatefulWidget{
   final String question;
   List<int> pastAnswers = [0,0,0,0,0,0];
   final List<HiveAnswer> answers;
+  double progress = 0;
+  bool enabled = true;
 
 
 
@@ -255,6 +252,9 @@ class Question extends StatefulWidget{
 
 class _QuestionState extends State<Question>{
   MaterialColor confidence(){
+    if(!widget.enabled){
+      return Colors.grey;
+    }
     int noCorrect = 0;
     widget.pastAnswers.forEach((element) {
       noCorrect += 1;
@@ -267,6 +267,14 @@ class _QuestionState extends State<Question>{
     }
 
     return Colors.green;
+  }
+
+  void updateProgress(){
+    int correct = 0;
+    widget.pastAnswers.forEach((element) {
+      correct += element;
+    });
+    widget.progress = correct/6;
   }
 
 
@@ -319,6 +327,11 @@ class _QuestionState extends State<Question>{
   Widget build(context){
     return GestureDetector(
       onLongPress: () {
+        setState(() {
+          widget.enabled = !widget.enabled;
+        });
+      },
+      onDoubleTap: (){
         ///push to question creator with question
         Navigator.push(context, MaterialPageRoute(builder: (context) => MakeQuestion(question: widget.hiveQuestion)));
         ///delete question

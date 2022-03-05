@@ -294,7 +294,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     //check permissions for notification access
-    requestUserPermission();
+
+    dev.log("Request User Permission");
     globals.requestUserPermission = requestUserPermission;
 
     loadPacks().then((result) {
@@ -303,6 +304,11 @@ class _MyHomePageState extends State<MyHomePage> {
       });
 
     });
+    if(!globals.notificationsAllowed){
+      Future.delayed(Duration.zero, (){
+        requestUserPermission();
+      });
+    }
   }
 
 
@@ -379,6 +385,11 @@ class _PackDisplayState extends State<PackDisplay>{
           widget.hivePack.enabled = !(widget.hivePack.enabled);
         });
       },
+      onDoubleTap: () async{
+        Box box = await Hive.openBox("Globals");
+        await box.put("editbox", widget.hivePack);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
+      },
       child: Material(
         elevation: 5,
         color: isEnabled(),
@@ -394,37 +405,23 @@ class _PackDisplayState extends State<PackDisplay>{
                 child: Text(widget.name),
               ),
               Align(
-                alignment: FractionalOffset(0.5, 0.3),
+                alignment: FractionalOffset(0.5, 0.65),
                 child: CircularProgressIndicator(
                   strokeWidth: 6.0,
                   value: 0.5/*widget.progress*/,
                 ),
               ),
               Align(
-                alignment: FractionalOffset(0.5, 0.32),
+                alignment: FractionalOffset(0.17, 0.25),
                 child: Text("Questions: " + widget.hivePack.questions.length.toString()),
               ),
               Align(
-                alignment: FractionalOffset(0.5, 0.32),
+                alignment: FractionalOffset(0.17, 0.55),
                 child: Text("Attempted: " + questionsAttempted()[0].toString()),
               ),
               Align(
-                alignment: FractionalOffset(0.5, 0.32),
-                child: Text("Questions: " + questionsAttempted()[1].toString()),
-              ),
-              Align(
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.create_rounded),
-                      onPressed: () async{
-                        Box box = await Hive.openBox("Globals");
-                        await box.put("editbox", widget.hivePack);
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CreatePack(pack: widget.hivePack)));
-                      },
-                    ),
-                  ],
-                ),
+                alignment: FractionalOffset(0.17, 0.85),
+                child: Text("Correct: " + questionsAttempted()[1].toString()),
               ),
             ],
           ),
