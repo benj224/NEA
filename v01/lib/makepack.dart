@@ -28,6 +28,7 @@ void setQuestions(HivePack? pack) async{
     pack.questions.forEach((question) {
       Question newQst = Question(cardNo: question.cardNo, question: question.question, answers: question.answers, hiveQuestion: question,);
       globals.questions.add(newQst);
+      log("loaded question");
     });
   }
 }

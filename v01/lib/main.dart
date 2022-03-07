@@ -120,14 +120,18 @@ void main() async{
           int? minn = int.tryParse(min.toString().substring(0, 2));
           mins = minn!;
         }
-        sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
+        dev.log("scheduled notificatons");
+        //sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
+        sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
       }
     });
   }
 
   var cron = new Cron();
-  cron.schedule(Schedule.parse("* 1 * * *"), () async {
+  cron.schedule(Schedule.parse("*/2 * * * *"), () async {
     scheduleQuestions();
+    await Future.delayed(Duration(seconds: 240));
+    await cron.close();
   });
   
 
@@ -373,7 +377,11 @@ class _PackDisplayState extends State<PackDisplay>{
       correct += element.correct;
     });
 
-    return [qst, correct];
+    if(correct == 0){
+      return [qst, correct, 0.03];
+    }
+
+    return [qst, correct, correct/qst];
   }
 
   @override
@@ -408,7 +416,7 @@ class _PackDisplayState extends State<PackDisplay>{
                 alignment: FractionalOffset(0.5, 0.65),
                 child: CircularProgressIndicator(
                   strokeWidth: 6.0,
-                  value: 0.5/*widget.progress*/,
+                  value: questionsAttempted()[2]/*widget.progress*/,
                 ),
               ),
               Align(
