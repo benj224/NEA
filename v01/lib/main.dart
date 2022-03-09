@@ -92,7 +92,10 @@ void main() async{
     var rng = Random();
     Box box = await Hive.openBox("Globals");
     List<dynamic> pcks = box.get("packs");
+    dev.log("length of packs");
+
     List<HivePack> _packList = pcks.cast<HivePack>();
+    dev.log(_packList.length.toString());
     _packList.forEach((pack) {
       List<HiveQuestion> qstList = [];
       pack.questions.forEach((question) {
@@ -105,7 +108,8 @@ void main() async{
         }
       });
       double hourIndex = 14/pack.frequency;
-      for(int x = 0; x > pack.frequency; x++){
+      for(int x = 0; x > pack.frequency; x++){///something broken here
+        dev.log(x.toString());
         HiveQuestion qst = qstList.removeAt(rng.nextInt(qstList.length));
 
         double lower = 60 * 7 + hourIndex * x * 60;
@@ -122,15 +126,18 @@ void main() async{
         }
         dev.log("scheduled notificatons");
         //sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
-        sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
+        sendNotification(DateTime.now().hour, DateTime.now().minute + 2, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
       }
     });
   }
 
   var cron = new Cron();
   cron.schedule(Schedule.parse("*/2 * * * *"), () async {
+    print("every 2 minutes");
     scheduleQuestions();
-    await Future.delayed(Duration(seconds: 240));
+    //scheduleQuestions();
+   // dev.log("sent cron");
+    await Future.delayed(Duration(seconds: 40));
     await cron.close();
   });
   
