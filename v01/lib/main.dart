@@ -98,32 +98,46 @@ void main() async{
     dev.log(_packList.length.toString());
     _packList.forEach((pack) {
       List<HiveQuestion> qstList = [];
+      dev.log("question list length");
+      dev.log(pack.questions.length.toString());
       pack.questions.forEach((question) {
+        dev.log(question.question);
         int score = 0;
-        for(int i = 0; i > 6; i++){
-          score += question.pastAnswers[i] * 6;
+        for(int i = 0; i < 6; i++){
+          dev.log("boom");
+          score += question.pastAnswers[i] * 6;///shouldnt be 6
         }
-        for(int n = 0; n > score; n++){
+        dev.log("score: ");
+        dev.log(score.toString());
+        for(int n = 0; n < score; n++){
+          dev.log("pow");
           qstList.add(question);
         }
       });
       double hourIndex = 14/pack.frequency;
       for(int x = 0; x > pack.frequency; x++){///something broken here
         dev.log(x.toString());
-        HiveQuestion qst = qstList.removeAt(rng.nextInt(qstList.length));
-
-        double lower = 60 * 7 + hourIndex * x * 60;
-        double upper = 60 * 7 + hourIndex * (x + 1) * 60;
-        int diff = rng.nextInt((upper-lower).toInt());
-        int minutes = diff + lower.toInt();
-        double time = minutes/60;
-        int hours = time.toInt();
-        int mins = 0;
-        int? min = int.tryParse(time.toString().split(".")[1]);
-        if(min is int){
-          int? minn = int.tryParse(min.toString().substring(0, 2));
-          mins = minn!;
+        HiveQuestion qst = qstList[0];
+        dev.log(0.toString());
+        if(qstList.length > 1){
+          dev.log(1.toString());
+          HiveQuestion qst = qstList.removeAt(rng.nextInt(qstList.length)-1);
+          dev.log(2.toString());
+        }else{
+          dev.log(3.toString());
+          HiveQuestion qst = qstList.removeAt(0);
+          dev.log(4.toString());
         }
+
+
+        //double lower = 60 * 7 + hourIndex * x * 60;
+        //double upper = 60 * 7 + hourIndex * (x + 1) * 60;
+        //int diff = rng.nextInt((upper-lower).toInt());
+        //int minutes = diff + lower.toInt();
+        //double time = minutes/60;
+        //int hours = time.toInt();
+        //int mins = (time-hours)*60.toInt();
+
         dev.log("scheduled notificatons");
         //sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
         sendNotification(DateTime.now().hour, DateTime.now().minute + 2, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
@@ -171,7 +185,7 @@ class MyApp extends StatelessWidget{
     for( var i = 1; i >= 5; i ++){
       past[i-1] = past[i];
     }
-    past[5] = 1;
+    past[5] = 0;
 
     return past;
     ///for loop
@@ -181,7 +195,7 @@ class MyApp extends StatelessWidget{
     for( var i = 1; i >= 5; i ++){
       past[i-1] = past[i];
     }
-    past[5] = 0;
+    past[5] = 2;
 
     return past;
   }

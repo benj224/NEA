@@ -85,7 +85,7 @@ class _CreatePackState extends State<CreatePack>{//GetCards
                       HiveAnswer(text: "<Ans1>", correct: false),
                       HiveAnswer(text: "<Ans2>", correct: false),
                       HiveAnswer(text: "<Ans3>", correct: false),
-                    ], attempted: 0, correct: 0, pastAnswers: [0,0,0,0,0,0], hivePack: widget.pack),)));
+                    ], attempted: 0, correct: 0, pastAnswers: [1,1,1,1,1,1], hivePack: widget.pack),)));
                   });
                 },
                 tooltip: 'Add Item',
@@ -239,7 +239,7 @@ class Question extends StatefulWidget{
   final HiveQuestion hiveQuestion;
   final int cardNo;
   final String question;
-  List<int> pastAnswers = [0,0,0,0,0,0];
+  List<int> pastAnswers = [1,1,1,1,1,1];
   final List<HiveAnswer> answers;
   double progress = 0;
   bool enabled = true;
