@@ -115,18 +115,12 @@ void main() async{
         }
       });
       double hourIndex = 14/pack.frequency;
-      for(int x = 0; x > pack.frequency; x++){///something broken here
-        dev.log(x.toString());
+      for(int x = 0; x < pack.frequency; x++){///something broken here
         HiveQuestion qst = qstList[0];
-        dev.log(0.toString());
         if(qstList.length > 1){
-          dev.log(1.toString());
           HiveQuestion qst = qstList.removeAt(rng.nextInt(qstList.length)-1);
-          dev.log(2.toString());
         }else{
-          dev.log(3.toString());
           HiveQuestion qst = qstList.removeAt(0);
-          dev.log(4.toString());
         }
 
 
@@ -136,23 +130,20 @@ void main() async{
         //int minutes = diff + lower.toInt();
         //double time = minutes/60;
         //int hours = time.toInt();
-        //int mins = (time-hours)*60.toInt();
+        //int mins = ((time-hours)*60).toInt();
 
         dev.log("scheduled notificatons");
         //sendNotification(hours, mins, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
-        sendNotification(DateTime.now().hour, DateTime.now().minute + 2, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
+        sendNotification(DateTime.now().hour, DateTime.now().minute + 1, qst.question, qst.answers[0].text, qst.answers[1].text, qst.answers[2].text);
       }
     });
   }
 
   var cron = new Cron();
   cron.schedule(Schedule.parse("*/2 * * * *"), () async {
-    print("every 2 minutes");
     scheduleQuestions();
-    //scheduleQuestions();
-   // dev.log("sent cron");
     await Future.delayed(Duration(seconds: 40));
-    await cron.close();
+    //await cron.close();
   });
   
 
@@ -200,14 +191,22 @@ class MyApp extends StatelessWidget{
     return past;
   }
 
-  void notificationStream() async{
-    Box box = await Hive.openBox("Globals");
-    List<dynamic> pcks = box.get("packs");
+  void notificationStream(){
 
-    late HivePack relevantPack;
-    late HiveQuestion relevantQuestion;
 
-    AwesomeNotifications().actionStream.listen((event){
+    AwesomeNotifications().actionStream.listen((event) async{
+
+
+      Box box = await Hive.openBox("Globals");
+      List<dynamic> pcks = box.get("packs");
+
+      late HivePack relevantPack;
+      late HiveQuestion relevantQuestion;
+      dev.log("stream executing");
+
+
+      Map<String, String> Payload = event.payload!;
+      dev.log(Payload["packname"]!);
 
 
       List<HivePack> hivePacks = pcks.cast<HivePack>();
