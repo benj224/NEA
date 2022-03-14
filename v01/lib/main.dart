@@ -192,7 +192,7 @@ class MyApp extends StatelessWidget{
   }
 
   void notificationStream(){
-
+  dev.log("notification Stream being run");
 
     AwesomeNotifications().actionStream.listen((event) async{
 
